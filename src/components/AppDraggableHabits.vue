@@ -50,6 +50,8 @@ function applyDrag(arr: any[], dragResult: dragResult) {
 async function onDrop(dropResult: dragResult) {
   state.activeHabits = applyDrag(state.activeHabits, dropResult);
 }
+
+console.log('I ran')
 </script>
 
 <template>
@@ -59,7 +61,7 @@ async function onDrop(dropResult: dragResult) {
 		@drop-not-allowed="false"
 		lock-axis="y"
 	>
-		<Draggable v-for="habit in activeHabits" :key="habit">
+		<Draggable v-for="habit in activeHabits || []" :key="habit">
 			<div class="grid grid-cols-[2fr,2fr] sm:grid-cols-[1fr,2fr,40px]">
 				<div
 					class="flex items-center justify-between overflow-hidden column-drag-handle select-none"

@@ -1,0 +1,36 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/vue3-recommended",
+        "prettier"
+    ],
+    "overrides": [
+        
+    ],
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "vueFeatures": {
+            "interpolationAsNonHTML": false,
+            "indent": false
+          }
+    },
+    "plugins": [
+        "vue",
+        "@typescript-eslint",
+        "unused-imports"
+    ],
+    "rules": {
+        "prettier/prettier": ["error"],
+        "no-unused-vars": "off",
+        "unused-imports/no-unused-imports": "error",
+        "vue/max-attributes-per-line": "off",
+        "vue/html-indent": "off"
+    }
+}

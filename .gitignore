@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+firebase-debug.log
+.firebase
+android/.gitignore
+android/*
+.firebase/*
+.firebase/hosting.ZGlzdA.cache

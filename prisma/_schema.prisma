@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator js {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+model ReplicacheClient {
+  // --- PUBLIC ID ---
+  replicacheClientId String @unique
+  replicacheClientGroupId String
+  version Int 
+  // --- FIELDS ---
+  lastMutationId     Int    @default(0)
+}
+
+// Replicache syncs “spaces”, i.e. groups of related data (such as to-dos and their connected categories)
+model Space {
+  // --- SYSTEM ---
+  versionAt Int    @default(0)
+  // --- PUBLIC ID ---
+  spaceId   String @unique
+  // --- RELATIONS ---
+  todos     Todo[] @relation("RSpaceToTodos")
+  user      User   @relation("RUserToSpaces", fields: [userId], references: [userId], onDelete: Cascade)
+  userId    String
+
+  @@index([userId])
+}
+
+model Todo {
+  // --- SYSTEM ---
+  versionUpdatedAt Int     @default(0)
+  // --- PUBLIC ID ---
+  todoId           String  @unique
+  // --- RELATIONS ---
+  space            Space   @relation("RSpaceToTodos", fields: [spaceId], references: [spaceId], onDelete: Cascade)
+  spaceId          String
+  // --- FIELDS ---
+  isDeleted        Boolean @default(false)
+  name             String?
+  sortOrder        Int     @default(0)
+  selectedDays     Json
+
+  @@index([spaceId])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // --- PUBLIC ID ---
+  userId    String   @unique
+  // --- RELATIONS ---
+  spaces    Space[]  @relation("RUserToSpaces")
+}

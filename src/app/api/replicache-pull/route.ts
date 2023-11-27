@@ -1,24 +1,25 @@
-import { getLastMutationId } from "@/utils/api/replicache/client";
-import { getVersion } from "@/app/api/replicache-push/route";
+import { cookies } from "next/headers";
+import { getSpaceVersion } from "@/app/api/replicache-push/route";
 import { db } from "@/lib/db";
 import { PrismaTx } from "@/utils/api/replicache/types";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { getErrorMessage } from "@/utils/misc";
 
-const serverID = 1;
 export async function POST(req: NextRequest, res: NextResponse) {
-  const pull = await req.json();
-  console.log(`Processing pull`, JSON.stringify(pull));
-  const { clientGroupID } = pull;
-  const fromVersion = pull.cookie ?? 0;
-  const t0 = Date.now();
+  const body = await req.json();
+  const userId = "preacher";
+  const spaceId = "space";
+  const { clientGroundID: clientGroundId } = body;
+  const fromVersion = body.cookie ?? 0;
 
   try {
     const data = await db.$transaction(
       async (tx) => {
-        // Get current version.
-        const { data: currentVersion } = await getVersion({ tx, serverID });
+        const { data: currentVersion } = await getSpaceVersion({
+          spaceId,
+          tx,
+          userId,
+        });
 
         if (fromVersion > currentVersion) {
           throw new Error(
@@ -27,32 +28,36 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
 
         // Get lmids for requesting client groups.
-        const lastMutationIDChanges = await getLastMutationIDChanges(
+        console.log("getting changed messages before", fromVersion);
+        const { data: lastMutationIds } = await getLastMutationIds({
           tx,
-          clientGroupID,
-          fromVersion
-        );
+          clientGroundId,
+          fromVersion,
+        });
 
-        // Get changed domain objects since requested version.
-        const changes = await tx.message.findMany({
+        const messages = await tx.message.findMany({
           where: {
-            version: {
+            lastModifiedVersion: {
               gt: fromVersion,
             },
           },
         });
-
-        // Build and return response.
+        console.log({ fromVersion, messages });
         const patch = [];
-
-        for (let row of changes) {
-          let { context, deleted, id, ord, sender, version: rowVersion } = row;
-
+        for (let message of messages) {
+          const {
+            id,
+            from,
+            content,
+            ord,
+            lastModifiedVersion: rowVersion,
+            deleted,
+          } = message;
           if (deleted) {
             if (rowVersion > fromVersion) {
               patch.push({
                 op: "del",
-                key: "message",
+                key: `message/${id}`,
               });
             }
           } else {
@@ -60,15 +65,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
               op: "put",
               key: `message/${id}`,
               value: {
-                from: sender,
+                from,
+                content,
                 order: ord,
-                content: context,
               },
             });
           }
         }
         return {
-          lastMutationIDChanges,
+          lastMutationIDChanges: lastMutationIds ?? {},
           cookie: currentVersion,
           patch,
         };
@@ -81,31 +86,40 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
 
     return NextResponse.json(data);
-  } catch (err) {
-    const errorMessage = getErrorMessage(err);
-    console.error("Error Message", errorMessage);
-
-    return NextResponse.json({ error: errorMessage }, { status: 401 });
+  } catch (error) {
+    return NextResponse.json({
+      error,
+    });
   }
 }
 
-async function getLastMutationIDChanges(
-  tx: PrismaTx,
-  clientGroupID: string,
-  fromVersion: number
-) {
+async function getLastMutationIds({
+  tx,
+  clientGroundId,
+  fromVersion,
+}: {
+  tx: PrismaTx;
+  clientGroundId: string;
+  fromVersion: number;
+}) {
   const rows = await tx.replicacheClient.findMany({
+    where: {
+      replicacheClientGroupId: clientGroundId,
+      lastModifiedVersion: {
+        lt: fromVersion,
+      },
+    },
     select: {
       id: true,
       lastMutationId: true,
     },
-    where: {
-      clientGroupId: clientGroupID,
-      version: {
-        gt: fromVersion,
-      },
-    },
   });
 
-  return Object.fromEntries(rows.map((r) => [r.id, r.lastMutationId]));
+  const formatedDate = Object.fromEntries(
+    rows.map((r) => [r.id, r.lastMutationId])
+  );
+
+  return {
+    data: formatedDate,
+  };
 }

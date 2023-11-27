@@ -1,66 +1,99 @@
-import { mutationsApi } from "@/utils/api/replicache/mutations";
 import { db } from "@/lib/db";
-import { getErrorMessage } from "@/utils/misc";
+import { PrismaTx } from "@/utils/api/replicache/types";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { MessageWithID } from "@/types";
-import { PrismaTx } from "@/utils/api/replicache/types";
-
-export async function getVersion({
-  tx,
-  serverID,
-}: {
-  tx: PrismaTx;
-  serverID: number;
-}) {
-  const data = await tx.replicacheServer.findFirstOrThrow({
-    where: {
-      id: serverID,
-    },
-  });
-
-  if (!data) throw new Error("replicache_server_not_found");
-
-  return {
-    data: data.version,
-  };
-}
-
-const serverID = 1;
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  const push = req.body;
-  console.log("Processing push", JSON.stringify(push));
+  const body = await req.json();
+  const userId = "preacher";
+  const spaceId = "space";
+  const { clientGroupID: clientGroupId, mutations } = body;
 
-  const t = await req.json();
-  const { clientGroupID, clientID, mutations } = t;
-  const t0 = Date.now();
   try {
-    const { data: versionLatest } = await db.$transaction(
+    const transaction = db.$transaction(
       async (tx) => {
-        // Get the previous version and calculate the next one.
+        for await (let mutation of mutations) {
+          const { clientID: clientId } = mutation;
 
-        const { data: prevVersion } = await getVersion({
-          tx,
-          serverID,
-        });
+          /* 
+            * Step 1:
+            Get the previous version and calculate the next one.
+          */
+          const { data: version } = await getSpaceVersion({
+            tx,
+            userId,
+            spaceId,
+          });
 
-        const nextVersion = prevVersion + 1;
+          const nextVersion = version + 1;
 
-        const lastMutationID = await getLastMutationID(tx, clientID);
+          const { data: lastMutationId } = await getLastMutationId({
+            tx,
+            clientId,
+            clientGroupId,
+            spaceId,
+          });
+          const nextMutationId = lastMutationId + 1;
 
-        // #4. Iterate mutations, increase mutation Id on each iteration, but use next version for comparison
-        await iterate({
-          tx,
-          lastMutationID,
-          mutations,
-          nextVersion,
-          clientGroupID,
-          clientID,
-        });
+          /* 
+            * Note:
+            It's common due to connectivity issues for clients to send a
+            mutation which has already been processed. Skip these.
+           */
+          if (mutation.id < nextMutationId) {
+            console.log(
+              `Mutation ${mutation.id} has already been processed - skipping`
+            );
+            // ! TEMP
+            continue;
+          }
 
+          /*
+            * Note
+            If the Replicache client is working correctly, this can never
+            happen. If it does there is nothing to do but return an error to
+            client and report a bug to Replicache.
+          */
+          if (mutation.id > nextMutationId) {
+            throw new Error(
+              `Mutation ${mutation.id} is from the future - aborting. This can happen in development if the server restarts. In that case, clear appliation data in browser and refresh.`
+            );
+          }
+
+          // For each possible mutation, run the server-side logic to apply the
+          // mutation.
+          switch (mutation.name) {
+            case "createMessage":
+              await createMessage({
+                spaceId,
+                tx,
+                args: mutation.args,
+                nextVersion,
+              });
+              break;
+            default:
+              throw new Error(`Unknown mutation: ${mutation.name}`);
+          }
+
+          setLastMutationId({
+            clientGroupId,
+            clientId,
+            nextMutationId,
+            tx,
+            version: nextVersion,
+          });
+
+          await tx.replicacheSpace.update({
+            where: {
+              spaceId,
+            },
+            data: {
+              version: nextVersion,
+            },
+          });
+        }
         return {
-          data: null,
+          data: true,
         };
       },
       {
@@ -69,166 +102,165 @@ export async function POST(req: NextRequest, res: NextResponse) {
         timeout: 10000, // default: 5000
       }
     );
-
-    return NextResponse.json({ done: versionLatest });
-  } catch (err) {
-    const errorMessage = getErrorMessage(err);
-    console.error("errorMessage", errorMessage);
-
-    return NextResponse.json({ error: errorMessage }, { status: 401 });
-  } finally {
+    return NextResponse.json({
+      mutations,
+    });
+  } catch (error) {
+    return NextResponse.json({
+      error,
+    });
   }
 }
 
-async function getLastMutationID(tx: PrismaTx, clientID: string) {
-  const clientRow = await tx.replicacheClient.findFirst({
-    where: {
-      id: clientID,
-    },
-  });
-  if (!clientRow) {
-    return 0;
-  }
-  return clientRow.lastMutationId;
-}
-
-async function setLastMutationID({
+export async function getSpaceVersion({
   tx,
-  clientID,
-  clientGroupID,
-  mutationID,
-  version,
+  userId,
+  spaceId,
 }: {
   tx: PrismaTx;
-  clientID: string;
-  clientGroupID: string;
-  mutationID: number;
-  version: number;
+  userId: string;
+  spaceId: string;
 }) {
+  const space = await tx.replicacheSpace.findFirst({
+    where: {
+      AND: [{ userId, spaceId }],
+    },
+  });
+
+  if (!space) throw new Error("Space Doesn't Exist");
+
+  return {
+    data: space.version,
+  };
+}
+
+async function getLastMutationId({
+  tx,
+  clientId,
+  clientGroupId,
+  spaceId,
+}: {
+  tx: PrismaTx;
+  clientId: string;
+  clientGroupId: string;
+  spaceId: string;
+}) {
+  // ! FIX ME
   const client = await tx.replicacheClient.findFirst({
     where: {
-      id: clientID,
+      AND: [{ clientGroupId, clientId }],
     },
   });
 
   if (!client) {
-    await tx.replicacheClient.create({
-      data: {
-        id: clientID,
-        clientGroupId: clientGroupID,
-        lastMutationId: mutationID,
-        version,
-      },
-    });
-  } else {
-    await tx.replicacheClient.update({
-      data: {
-        clientGroupId: clientGroupID,
-        // @ts-ignore
-        lastMutationId: mutationID,
-        version,
-      },
+    // 1. Check if the ClientGroup exist
+
+    const clientGroup = await tx.replicacheClientGroup.findFirst({
       where: {
-        id: clientID,
+        id: clientGroupId,
       },
     });
+
+    if (!clientGroup) {
+      await tx.replicacheClientGroup.create({
+        data: {
+          id: clientGroupId,
+          spaceId,
+          clients: {
+            createMany: {
+              data: [
+                {
+                  clientId,
+                  clientGroupId,
+                  id: clientId,
+                  lastMutationId: 0,
+                  lastModifiedVersion: 0,
+                },
+              ],
+            },
+          },
+        },
+      });
+    } else {
+      await tx.replicacheClient.create({
+        data: {
+          clientId,
+          clientGroupId,
+          id: clientId,
+          lastMutationId: 0,
+          lastModifiedVersion: 0,
+          ReplicacheClientGroup: {
+            connect: {
+              id: clientGroupId,
+            },
+          },
+        },
+      });
+    }
+
+    return { data: 0 };
+  } else {
+    return {
+      data: client.lastMutationId,
+    };
   }
 }
 
-async function iterate({
+async function createMessage({
   tx,
-  lastMutationID,
-  mutations,
+  args,
   nextVersion,
-  clientID,
-  clientGroupID,
+  spaceId,
 }: {
   tx: PrismaTx;
-  lastMutationID: number;
-  mutations: any;
+  args: { id: string; from: string; content: string; order: number };
   nextVersion: number;
-  clientGroupID: string;
-  clientID: string;
+  spaceId: string;
 }) {
-  console.log(mutations);
-  for await (let mutation of mutations) {
-    const { clientID } = mutation;
-    const nextMutationID = await getLastMutationID(tx, clientID);
-    // It's common due to connectivity issues for clients to send a
-    // mutation which has already been processed. Skip these.
-    if (mutation.id < nextMutationID + 1) {
-      console.log(
-        `Mutation ${mutation.id} has already been processed - skipping`,
-        nextMutationID + 1
-      );
-      continue;
-    }
-
-    // If the Replicache client is working correctly, this can never
-    // happen. If it does there is nothing to do but return an error to
-    // client and report a bug to Replicache.
-    if (mutation.id > nextMutationID + 1) {
-      console.warn(`Mutation ${mutation.id} is from the future - aborting`);
-      break;
-    }
-
-    try {
-      switch (mutation.name) {
-        case "createMessage": {
-          await createMessage(tx, mutation.args, nextVersion);
-          break;
-        }
-        case "deleteMessage": {
-          await deleteMessage(tx, mutation.args);
-        }
-      }
-
-      // Update lastMutationID for requesting client.
-      await setLastMutationID({
-        tx,
-        clientID,
-        clientGroupID,
-        mutationID: nextMutationID + 1,
-        version: nextVersion,
-      });
-
-      // Update global version.
-      await tx.replicacheServer.update({
-        data: {
-          version: nextVersion,
-        },
-        where: {
-          id: serverID,
-        },
-      });
-    } catch (err) {
-      console.error("Caught error from mutation", mutation, err);
-    }
-  }
-}
-
-async function createMessage(
-  tx: PrismaTx,
-  { id, from, content, order }: MessageWithID,
-  version: number
-) {
+  const { content, from, id, order } = args;
   await tx.message.create({
     data: {
-      id: `message/${id}`,
-      sender: from,
-      context: content,
+      lastModifiedVersion: nextVersion,
+      content,
+      from,
+      id,
       ord: order,
+      space: {
+        connect: {
+          spaceId,
+        },
+      },
       deleted: false,
-      version,
     },
   });
+  return;
 }
 
-async function deleteMessage(tx: PrismaTx, id: string) {
-  console.log("id", id);
-  await tx.message.delete({
+async function setLastMutationId({
+  tx,
+  clientId,
+  clientGroupId,
+  nextMutationId,
+  version,
+}: {
+  tx: PrismaTx;
+  clientGroupId: string;
+  clientId: string;
+  nextMutationId: number;
+  version: number;
+}) {
+  await tx.replicacheClient.update({
     where: {
-      id,
+      clientId,
+      AND: {
+        clientGroupId,
+      },
+    },
+    data: {
+      lastMutationId: nextMutationId,
+      lastModifiedVersion: version,
     },
   });
+
+  return;
 }

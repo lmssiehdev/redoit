@@ -15,23 +15,50 @@ generator js {
   binaryTargets = ["native"]
 }
 
-model ReplicacheServer {
-  id Int @id @unique @default(1)
-  version Int
+model User {
+  id        String            @unique() @default(uuid())
+  name      String
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt()
+  userId    String            @unique
+  spaces    ReplicacheSpace[]
 }
 
-model Message {
-  id String @id @unique
-  sender String
-  context String
-  ord Int
-  deleted Boolean
-  version Int
+model ReplicacheSpace {
+  spaceId  String    @unique()
+  version  Int       @default(0)
+  userId   String
+  user     User      @relation(fields: [userId], references: [userId])
+  messages Message[]
+}
+
+model ReplicacheClientGroup {
+  id      String             @unique()
+  spaceId String
+  clients ReplicacheClient[]
 }
 
 model ReplicacheClient {
-  id String @id @unique
-  clientGroupId String
-  lastMutationId Int
-  version Int
+  id                  String @unique()
+  clientGroupId       String
+  lastMutationId      Int
+  lastModifiedVersion Int
+  clientId            String @unique()
+
+  ReplicacheClientGroup   ReplicacheClientGroup? @relation(fields: [replicacheClientGroupId], references: [id])
+  replicacheClientGroupId String?
+}
+
+model Message {
+  id String @unique()
+
+  from    String
+  ord     Int
+  content String
+
+  lastModifiedVersion Int
+  deleted             Boolean
+
+  space   ReplicacheSpace @relation(fields: [spaceId], references: [spaceId])
+  spaceId String
 }

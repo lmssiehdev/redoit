@@ -69,7 +69,7 @@ enabled = true
 # in emails.
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://localhost:3000"]
+additional_redirect_urls = ["env(ANOTHER_URL)"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.
@@ -126,8 +126,15 @@ redirect_uri = ""
 # or any other third-party OIDC providers.
 url = ""
 
+[auth.external.google]
+enabled=true
+client_id="env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret= "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+
 [analytics]
-enabled = false
+enabled = true
 port = 54327
 vector_port = 54328
 # Configure one of the supported backends: `postgres`, `bigquery`.

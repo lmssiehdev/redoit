@@ -1,16 +1,63 @@
 import { db } from "@/lib/db";
 import { PrismaTx } from "@/utils/api/replicache/types";
+import { Habit } from "@/utils/habits";
+import {
+  getLastMutationId,
+  setLastMutationId,
+} from "@/utils/replicache/client";
+import { getSpaceVersion, updateSpaceVersion } from "@/utils/replicache/space";
 import { Prisma } from "@prisma/client";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import Pusher from "pusher";
+import { z } from "zod";
+
+const mutationSchema = z.object({
+  clientID: z.string(),
+  id: z.number(),
+  name: z.string(),
+  args: z.any(),
+  timestamp: z.number(),
+});
+
+const bodySchema = z.object({
+  profileID: z.string(),
+  clientGroupID: z.string(),
+  pushVersion: z.number(),
+  schemaVersion: z.string(),
+  mutations: z.array(mutationSchema),
+});
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
-  const userId = "preacher";
-  const spaceId = "space";
-  const { clientGroupID: clientGroupId, mutations } = body;
 
+  const { clientGroupID: clientGroupId, mutations } = bodySchema.parse(body);
+
+  const supabase = createServerComponentClient({
+    cookies: () => cookies(),
+  });
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        session,
+        error: "insufficient_args",
+      },
+      {
+        status: 403,
+      }
+    );
+  }
+
+  const userId = session.user.id;
+  const spaceId = userId;
   try {
-    const transaction = db.$transaction(
+    db.$transaction(
       async (tx) => {
         for await (let mutation of mutations) {
           const { clientID: clientId } = mutation;
@@ -63,7 +110,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           // For each possible mutation, run the server-side logic to apply the
           // mutation.
           switch (mutation.name) {
-            case "createMessage":
+            case "createHabit":
               await createMessage({
                 spaceId,
                 tx,
@@ -71,11 +118,38 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 nextVersion,
               });
               break;
+            case "deleteHabit": {
+              await deleteHabit({
+                tx,
+                args: mutation.args,
+                spaceId,
+                nextVersion,
+              });
+              break;
+            }
+            case "updateHabit": {
+              await updateHabit({
+                tx,
+                args: mutation.args,
+                spaceId,
+                nextVersion,
+              });
+              break;
+            }
+            case "markHabit": {
+              await markHabit({
+                tx,
+                args: mutation.args,
+                spaceId,
+                nextVersion,
+              });
+              break;
+            }
             default:
               throw new Error(`Unknown mutation: ${mutation.name}`);
           }
 
-          setLastMutationId({
+          await setLastMutationId({
             clientGroupId,
             clientId,
             nextMutationId,
@@ -83,18 +157,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
             version: nextVersion,
           });
 
-          await tx.replicacheSpace.update({
-            where: {
-              spaceId,
-            },
-            data: {
-              version: nextVersion,
-            },
+          await updateSpaceVersion({
+            nextVersion,
+            spaceId,
+            tx,
           });
+
+          sendPoke();
         }
-        return {
-          data: true,
-        };
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // Required for Replicache to work
@@ -103,7 +173,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       }
     );
     return NextResponse.json({
-      mutations,
+      done: true,
     });
   } catch (error) {
     return NextResponse.json({
@@ -112,98 +182,113 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 }
 
-export async function getSpaceVersion({
-  tx,
-  userId,
-  spaceId,
-}: {
-  tx: PrismaTx;
-  userId: string;
-  spaceId: string;
-}) {
-  const space = await tx.replicacheSpace.findFirst({
-    where: {
-      AND: [{ userId, spaceId }],
-    },
+async function sendPoke() {
+  const pusher = new Pusher({
+    appId: "1640260",
+    key: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_KEY!,
+    secret: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_SECRET!,
+    cluster: "us2",
+    useTLS: true,
   });
-
-  if (!space) throw new Error("Space Doesn't Exist");
-
-  return {
-    data: space.version,
-  };
+  const t0 = Date.now();
+  await pusher.trigger("default", "poke", {});
+  console.log("Sent poke in", Date.now() - t0);
 }
 
-async function getLastMutationId({
+async function deleteHabit({
   tx,
-  clientId,
-  clientGroupId,
+  args,
+  nextVersion,
   spaceId,
 }: {
   tx: PrismaTx;
-  clientId: string;
-  clientGroupId: string;
+  args: string;
+  nextVersion: number;
   spaceId: string;
 }) {
-  // ! FIX ME
-  const client = await tx.replicacheClient.findFirst({
+  await tx.habit.update({
     where: {
-      AND: [{ clientGroupId, clientId }],
+      // ! Temp
+      id: args.replace("habit/", ""),
+      AND: [{ spaceId }],
+    },
+    data: {
+      version: nextVersion,
+      deleted: true,
     },
   });
+  return;
+}
 
-  if (!client) {
-    // 1. Check if the ClientGroup exist
+async function updateHabit({
+  tx,
+  args,
+  nextVersion,
+  spaceId,
+}: {
+  tx: PrismaTx;
+  args: {
+    id: string;
+    args: Partial<Habit.Definition>;
+  };
+  nextVersion: number;
+  spaceId: string;
+}) {
+  // * naming is hard, I know.
+  const { args: habit } = args;
+  const filteredValues = Object.keys(habit).map((key) => [
+    key,
+    habit[key as keyof typeof habit],
+  ]);
 
-    const clientGroup = await tx.replicacheClientGroup.findFirst({
-      where: {
-        id: clientGroupId,
-      },
-    });
+  await tx.habit.update({
+    where: {
+      id: args.id,
+      spaceId,
+    },
+    data: {
+      ...Object.fromEntries(filteredValues),
+      version: nextVersion,
+    },
+  });
+}
 
-    if (!clientGroup) {
-      await tx.replicacheClientGroup.create({
-        data: {
-          id: clientGroupId,
-          spaceId,
-          clients: {
-            createMany: {
-              data: [
-                {
-                  clientId,
-                  clientGroupId,
-                  id: clientId,
-                  lastMutationId: 0,
-                  lastModifiedVersion: 0,
-                },
-              ],
-            },
-          },
-        },
-      });
-    } else {
-      await tx.replicacheClient.create({
-        data: {
-          clientId,
-          clientGroupId,
-          id: clientId,
-          lastMutationId: 0,
-          lastModifiedVersion: 0,
-          ReplicacheClientGroup: {
-            connect: {
-              id: clientGroupId,
-            },
-          },
-        },
-      });
-    }
-
-    return { data: 0 };
-  } else {
-    return {
-      data: client.lastMutationId,
+async function markHabit({
+  tx,
+  args: { id, args },
+  nextVersion,
+  spaceId,
+}: {
+  tx: PrismaTx;
+  args: {
+    id: string;
+    args: {
+      dateId: string;
+      status: "skipped" | "completed";
     };
-  }
+  };
+  nextVersion: number;
+  spaceId: string;
+}) {
+  const { status, dateId } = args;
+  const tempArr = (dateId as string).split("/");
+  const date = tempArr[tempArr.length - 1];
+  const habitId = id.replace("habit/", "");
+
+  await tx.completedDate.upsert({
+    where: { habitId_date: { date: date, habitId } },
+    update: {
+      status,
+    },
+    create: {
+      id: dateId,
+      status,
+      habitId,
+      date,
+      deleted: false,
+      version: nextVersion,
+    },
+  });
 }
 
 async function createMessage({
@@ -213,54 +298,25 @@ async function createMessage({
   spaceId,
 }: {
   tx: PrismaTx;
-  args: { id: string; from: string; content: string; order: number };
+  args: Habit.Definition;
   nextVersion: number;
   spaceId: string;
 }) {
-  const { content, from, id, order } = args;
-  await tx.message.create({
+  const { completedDates, ...rest } = args;
+
+  await tx.habit.create({
     data: {
-      lastModifiedVersion: nextVersion,
-      content,
-      from,
-      id,
-      ord: order,
-      space: {
-        connect: {
-          spaceId,
-        },
-      },
+      version: nextVersion,
+      spaceId,
+      ...rest,
+      id: args.id,
+      // space: {
+      //   connect: {
+      //     spaceId,
+      //   },
+      // },
       deleted: false,
     },
   });
-  return;
-}
-
-async function setLastMutationId({
-  tx,
-  clientId,
-  clientGroupId,
-  nextMutationId,
-  version,
-}: {
-  tx: PrismaTx;
-  clientGroupId: string;
-  clientId: string;
-  nextMutationId: number;
-  version: number;
-}) {
-  await tx.replicacheClient.update({
-    where: {
-      clientId,
-      AND: {
-        clientGroupId,
-      },
-    },
-    data: {
-      lastMutationId: nextMutationId,
-      lastModifiedVersion: version,
-    },
-  });
-
   return;
 }

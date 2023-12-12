@@ -16,49 +16,73 @@ generator js {
 }
 
 model User {
-  id        String            @unique() @default(uuid())
-  name      String
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt()
-  userId    String            @unique
-  spaces    ReplicacheSpace[]
+  id    String @id @db.Uuid
+  email String @default("example@gmail.com")
+
+  ReplicacheSpace ReplicacheSpace[]
+
+  @@map("users")
 }
 
 model ReplicacheSpace {
-  spaceId  String    @unique()
-  version  Int       @default(0)
-  userId   String
-  user     User      @relation(fields: [userId], references: [userId])
-  messages Message[]
+  id      String  @id
+  version Int     @default(0)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId  String  @map("user_id") @db.Uuid
+  habits  Habit[]
+
+  @@index([userId])
+  @@map("replicache_space")
 }
 
 model ReplicacheClientGroup {
-  id      String             @unique()
-  spaceId String
+  id      String             @id @default(uuid())
   clients ReplicacheClient[]
 }
 
 model ReplicacheClient {
-  id                  String @unique()
-  clientGroupId       String
-  lastMutationId      Int
-  lastModifiedVersion Int
-  clientId            String @unique()
-
-  ReplicacheClientGroup   ReplicacheClientGroup? @relation(fields: [replicacheClientGroupId], references: [id])
-  replicacheClientGroupId String?
+  id                      String                @id
+  ReplicacheClientGroup   ReplicacheClientGroup @relation(fields: [replicacheClientGroupId], references: [id])
+  replicacheClientGroupId String
+  lastMutationId          Int                   @default(0)
+  lastModifiedVersion     Int                   @default(0)
 }
 
-model Message {
-  id String @unique()
+model Habit {
+  id String @id
 
-  from    String
-  ord     Int
-  content String
+  ReplicacheSpace ReplicacheSpace @relation(fields: [spaceId], references: [id])
+  spaceId         String
 
-  lastModifiedVersion Int
-  deleted             Boolean
+  // --- Replicache Stuff ---
+  deleted Boolean @default(false)
+  version Int     @default(0)
 
-  space   ReplicacheSpace @relation(fields: [spaceId], references: [spaceId])
-  spaceId String
+  // ---  ---
+  name          String
+  color         String
+  completed     Boolean         @default(false)
+  archived      Boolean
+  frequency     Boolean[]
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt() @map("updated_at")
+  CompletedDate CompletedDate[]
+}
+
+model CompletedDate {
+  id        String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId   String
+
+  // --- Replicache Stuff ---
+  deleted Boolean @default(false)
+  version Int     @default(0)
+
+  date   String
+  status String
+
+  @@id([habitId, date])
+  @@map("completed_dates")
 }

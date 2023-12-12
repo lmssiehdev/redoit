@@ -1,7 +1,17 @@
+import { Navbar } from "@/components/supabase/Navbar";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { Metadata } from "next";
-import "./globals.css";
-import { ClientCookiesProvider } from "@/components/ProvidersWrapper";
+import localFont from "next/font/local";
 import { cookies } from "next/headers";
+import "./globals.css";
+import { AuthProvider } from "@/context/AuthProvider";
+import { UserNav } from "@/components/Navbar";
+
+const virgilFont = localFont({
+  src: "../../public/fonts/Virgil.woff2",
+  display: "swap",
+  variable: "--font-handrawn",
+});
 
 const APP_NAME = "PWA App";
 const APP_DEFAULT_TITLE = "My Awesome PWA App";
@@ -45,17 +55,30 @@ const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookiesStore = cookies();
+  const supabase = createServerComponentClient({
+    cookies: () => cookiesStore,
+  });
+  console.log("layout loaded");
+  // const { data: session } = await supabase.auth.getUser();
   return (
     <html lang="en">
-      <body className="font-mono">
-        <ClientCookiesProvider value={cookies().getAll()}>
-          {children}
-        </ClientCookiesProvider>
+      <body className={`${virgilFont.variable} font-handrawn`}>
+        <AuthProvider>
+          <div className="flex justify-between py-10 container mx-auto">
+            <h1 className="font-bold">Redoit</h1>
+            <UserNav />
+          </div>
+          <div>
+            <Navbar />
+          </div>
+          <main className="container mx-auto">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

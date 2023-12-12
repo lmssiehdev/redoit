@@ -18,7 +18,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
         }
       );
 
-
     const user = await db.user.create({
       data: {
         name: userId,

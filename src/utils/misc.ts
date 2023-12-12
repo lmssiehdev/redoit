@@ -1,4 +1,11 @@
 import { customAlphabet } from "nanoid";
+import clsx, { type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 /**
   Retrieves the error message from an error object or any other value.
   

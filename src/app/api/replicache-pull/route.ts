@@ -1,16 +1,37 @@
-import { cookies } from "next/headers";
-import { getSpaceVersion } from "@/app/api/replicache-push/route";
 import { db } from "@/lib/db";
-import { PrismaTx } from "@/utils/api/replicache/types";
+import { getLastMutationIds } from "@/utils/replicache/client";
+import { getSpaceVersion } from "@/utils/replicache/space";
 import { Prisma } from "@prisma/client";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
-  const userId = "preacher";
-  const spaceId = "space";
   const { clientGroundID: clientGroundId } = body;
   const fromVersion = body.cookie ?? 0;
+
+  const supabase = createServerComponentClient({
+    cookies: () => cookies(),
+  });
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session)
+    return NextResponse.json(
+      {
+        session,
+        error: "insufficient_args",
+      },
+      {
+        status: 403,
+      }
+    );
+
+  const userId = session.user.id;
+  const spaceId = userId;
 
   try {
     const data = await db.$transaction(
@@ -35,40 +56,71 @@ export async function POST(req: NextRequest, res: NextResponse) {
           fromVersion,
         });
 
-        const messages = await tx.message.findMany({
+        const messages = await tx.habit.findMany({
           where: {
-            lastModifiedVersion: {
-              gt: fromVersion,
-            },
+            AND: [{ spaceId }, { version: { gt: fromVersion } }],
           },
         });
-        console.log({ fromVersion, messages });
+
+        const dates = await tx.completedDate.findMany({
+          // where: {
+          //   AND: [{ version: { lt: fromVersion + 1 } }],
+          // },
+        });
+
         const patch = [];
         for (let message of messages) {
           const {
             id,
-            from,
-            content,
-            ord,
-            lastModifiedVersion: rowVersion,
+            version: rowVersion,
+            archived,
+            color,
+            completed,
+            frequency,
+            name,
             deleted,
           } = message;
           if (deleted) {
             if (rowVersion > fromVersion) {
               patch.push({
                 op: "del",
-                key: `message/${id}`,
+                key: `habit/${id}`,
               });
             }
           } else {
             patch.push({
               op: "put",
-              key: `message/${id}`,
+              key: `habit/${id}`,
               value: {
-                from,
-                content,
-                order: ord,
+                archived,
+                color,
+                completed,
+                frequency,
+                name,
               },
+            });
+          }
+        }
+        for (let date of dates) {
+          const {
+            id,
+            deleted,
+            version: rowVersion,
+            status,
+            date: completedDate,
+          } = date;
+          if (deleted) {
+            // if (rowVersion > fromVersion) {
+            //   patch.push({
+            //     op: "del",
+            //     key: `habit/${id}`,
+            //   });
+            // }
+          } else {
+            patch.push({
+              op: "put",
+              key: id,
+              value: status,
             });
           }
         }
@@ -87,39 +139,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(data);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({
       error,
     });
   }
-}
-
-async function getLastMutationIds({
-  tx,
-  clientGroundId,
-  fromVersion,
-}: {
-  tx: PrismaTx;
-  clientGroundId: string;
-  fromVersion: number;
-}) {
-  const rows = await tx.replicacheClient.findMany({
-    where: {
-      replicacheClientGroupId: clientGroundId,
-      lastModifiedVersion: {
-        lt: fromVersion,
-      },
-    },
-    select: {
-      id: true,
-      lastMutationId: true,
-    },
-  });
-
-  const formatedDate = Object.fromEntries(
-    rows.map((r) => [r.id, r.lastMutationId])
-  );
-
-  return {
-    data: formatedDate,
-  };
 }

@@ -1,20 +1,15 @@
 "use client";
 
-import Home from "@/components/Main";
 import { ProfileForm } from "@/components/habits/AddHabitForm";
 import { buttonVariants } from "@/components/ui/button";
-import { useUser } from "@/context/AuthProvider";
-import {
-  ReplicacheProvider,
-  useReplicacheFromContext,
-} from "@/context/ReplicacheProvider";
+import { useToast } from "@/components/ui/use-toast";
+import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
+import { HABIT_TEMPLATE, type Habit } from "@/utils/habits";
 import { cn } from "@/utils/misc";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import { HABIT_TEMPLATE, type Habit } from "@/utils/habits";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
 
 export function AppBackButton() {
   return (
@@ -67,7 +62,7 @@ function FormWrapper() {
     toast({
       description: "New habit added! 🌟",
     });
-    router.push("/");
+    router.push("/web");
   };
 
   return <ProfileForm onSubmit={handleCreateMessage} />;

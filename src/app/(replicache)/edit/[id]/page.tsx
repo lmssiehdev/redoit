@@ -39,7 +39,7 @@ function FormWrapper() {
     toast({
       description: "Updated and ready for success.",
     });
-    router.push("/");
+    router.push("/web");
   };
 
   return (

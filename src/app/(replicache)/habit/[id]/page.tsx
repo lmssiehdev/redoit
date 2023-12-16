@@ -30,7 +30,7 @@ function Content() {
   console.log(completedDates, Object.values(completedDates).length);
   function handleDeleteHabit() {
     deleteHabit();
-    router.push("/");
+    router.push("/web");
   }
 
   return (

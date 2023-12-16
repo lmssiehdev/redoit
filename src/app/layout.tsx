@@ -1,16 +1,13 @@
 "use client";
 import { UserNav } from "@/components/Navbar";
-import { AuthProvider, useUser } from "@/context/AuthProvider";
-import { DateProvider } from "@/context/DateProvider";
-import { HabitsProvider } from "@/context/HabitsProvider";
-import { ReplicacheProvider } from "@/context/ReplicacheProvider";
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import Link from "next/link";
-import { cn } from "@/utils/misc";
 import { buttonVariants } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider, useUser } from "@/context/AuthProvider";
+import { cn } from "@/utils/misc";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import Link from "next/link";
+import "./globals.css";
 
 const virgilFont = localFont({
   src: "../../public/fonts/Virgil.woff2",
@@ -71,10 +68,7 @@ export default function RootLayout({
         className={`${virgilFont.variable} font-handrawn max-w-screen-md w-full !mx-auto px-2`}
       >
         <AuthProvider>
-          <div className="flex justify-between py-7  mx-auto">
-            <Link href="/">Redoit</Link>
-            <UserNav />
-          </div>
+          <UserNav />
           <main className=" mx-auto">
             <Content>{children}</Content>
           </main>

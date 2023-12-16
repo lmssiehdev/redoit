@@ -176,8 +176,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             spaceId,
             tx,
           });
-
-          sendPusherPoke();
         }
       },
       {
@@ -186,6 +184,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         timeout: 10000, // default: 5000
       }
     );
+    await sendPusherPoke();
+
     return NextResponse.json({
       done: true,
     });

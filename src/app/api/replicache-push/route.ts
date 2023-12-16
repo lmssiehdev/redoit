@@ -1,16 +1,21 @@
 import { db } from "@/lib/db";
+import { sendPusherPoke } from "@/lib/pusher";
 import { PrismaTx } from "@/utils/api/replicache/types";
 import { Habit } from "@/utils/habits";
 import {
   getLastMutationId,
   setLastMutationId,
 } from "@/utils/replicache/client";
+import {
+  createHabit,
+  deleteDate,
+  markHabit,
+} from "@/utils/replicache/mutators/server";
 import { getSpaceVersion, updateSpaceVersion } from "@/utils/replicache/space";
 import { Prisma } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Pusher from "pusher";
 import { z } from "zod";
 
 const mutationSchema = z.object({
@@ -111,7 +116,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           // mutation.
           switch (mutation.name) {
             case "createHabit":
-              await createMessage({
+              await createHabit({
                 spaceId,
                 tx,
                 args: mutation.args,
@@ -145,6 +150,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
               });
               break;
             }
+            case "deleteDate": {
+              await deleteDate({
+                tx,
+                args: mutation.args,
+                spaceId,
+                nextVersion,
+              });
+              break;
+            }
             default:
               throw new Error(`Unknown mutation: ${mutation.name}`);
           }
@@ -163,7 +177,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             tx,
           });
 
-          sendPoke();
+          sendPusherPoke();
         }
       },
       {
@@ -180,19 +194,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       error,
     });
   }
-}
-
-async function sendPoke() {
-  const pusher = new Pusher({
-    appId: "1640260",
-    key: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_KEY!,
-    secret: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_SECRET!,
-    cluster: "us2",
-    useTLS: true,
-  });
-  const t0 = Date.now();
-  await pusher.trigger("default", "poke", {});
-  console.log("Sent poke in", Date.now() - t0);
 }
 
 async function deleteHabit({
@@ -240,10 +241,12 @@ async function updateHabit({
     key,
     habit[key as keyof typeof habit],
   ]);
-
+  console.log({
+    filteredValues,
+  });
   await tx.habit.update({
     where: {
-      id: args.id,
+      id: args.id.replace("habit/", ""),
       spaceId,
     },
     data: {
@@ -251,72 +254,4 @@ async function updateHabit({
       version: nextVersion,
     },
   });
-}
-
-async function markHabit({
-  tx,
-  args: { id, args },
-  nextVersion,
-  spaceId,
-}: {
-  tx: PrismaTx;
-  args: {
-    id: string;
-    args: {
-      dateId: string;
-      status: "skipped" | "completed";
-    };
-  };
-  nextVersion: number;
-  spaceId: string;
-}) {
-  const { status, dateId } = args;
-  const tempArr = (dateId as string).split("/");
-  const date = tempArr[tempArr.length - 1];
-  const habitId = id.replace("habit/", "");
-
-  await tx.completedDate.upsert({
-    where: { habitId_date: { date: date, habitId } },
-    update: {
-      status,
-    },
-    create: {
-      id: dateId,
-      status,
-      habitId,
-      date,
-      deleted: false,
-      version: nextVersion,
-    },
-  });
-}
-
-async function createMessage({
-  tx,
-  args,
-  nextVersion,
-  spaceId,
-}: {
-  tx: PrismaTx;
-  args: Habit.Definition;
-  nextVersion: number;
-  spaceId: string;
-}) {
-  const { completedDates, ...rest } = args;
-
-  await tx.habit.create({
-    data: {
-      version: nextVersion,
-      spaceId,
-      ...rest,
-      id: args.id,
-      // space: {
-      //   connect: {
-      //     spaceId,
-      //   },
-      // },
-      deleted: false,
-    },
-  });
-  return;
 }

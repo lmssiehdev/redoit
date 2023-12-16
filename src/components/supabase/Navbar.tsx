@@ -32,7 +32,6 @@ export function Navbar() {
   return (
     <>
       <nav className="flex justify-between">
-        <h1>redoit</h1>
         <ul>
           {user.session === null ? (
             <>

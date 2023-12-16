@@ -1,3 +1,4 @@
+import { pusherListen } from "@/lib/pusher";
 import { mutators } from "@/utils/replicache/mutators/client";
 import { useEffect, useState } from "react";
 import { Replicache } from "replicache";
@@ -9,27 +10,24 @@ export const useReplicache = ({ userId }: { userId?: string }) => {
 
   useEffect(() => {
     if (userId) {
-      const r = new Replicache({
-        // logLevel: "debug",
-        name: `${userId}`,
-        licenseKey:
-          "l00000000000000000000000000000001" ??
-          process.env.NEXT_PUBLIC_REPLICACHE!,
+      const r = new Replicache<typeof mutators>({
+        name: userId,
+        licenseKey: process.env.NEXT_PUBLIC_REPLICACHE!,
         pushURL: `/api/replicache-push`,
         pullURL: `/api/replicache-pull`,
         mutators,
       });
-      const log = async () => {
-        console.log(await r.query((tx) => tx.scan().toArray()));
-      };
-      log();
+
+      const disconnect = pusherListen({ rep: r });
+
       setRep(r);
 
-      return () => void r.close();
+      return () => {
+        r.close();
+        disconnect();
+      };
     }
   }, [userId]);
 
   return { data: rep };
 };
-
-export type ReplicacheInstanceType = ReturnType<typeof useReplicache>;

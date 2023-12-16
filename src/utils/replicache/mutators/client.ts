@@ -6,16 +6,17 @@ export const mutators = {
   deleteHabit,
   markHabit,
   updateHabit,
+  deleteDate,
 };
 
 export async function createHabit(
   tx: WriteTransaction,
   args: Habit.Definition
 ) {
-  const { id, archived, color, completedDates, frequency, name } = args;
+  const { id, archived, color, frequency, name } = args;
 
   const key = `habit/${id}`;
-  await tx.put(key, { id, archived, color, completedDates, frequency, name });
+  await tx.put(key, { id, archived, color, frequency, name });
 }
 
 export async function deleteHabit(tx: WriteTransaction, id: string) {
@@ -50,4 +51,17 @@ export async function markHabit(
 ) {
   const status = args.status;
   await tx.put(args.dateId, status);
+}
+
+async function deleteDate(
+  tx: WriteTransaction,
+  {
+    habitId,
+    dateId,
+  }: {
+    habitId: string;
+    dateId: string;
+  }
+) {
+  await tx.del(dateId);
 }

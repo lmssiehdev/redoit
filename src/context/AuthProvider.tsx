@@ -1,7 +1,17 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  Session,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 
 type ContextValue = {
@@ -18,7 +28,7 @@ export function useUser() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<any>("DEFAULLT");
+  const [session, setSession] = useState<Session | null>(null);
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -40,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
   */
+  let _session = useRef<Session | null>(null);
 
   useEffect(() => {
     getActiveSession();
@@ -47,13 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const {
         data: { session: activeSession },
       } = await supabase.auth.getSession();
+      _session.current = activeSession;
       setSession(activeSession);
     }
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+      console.log("onAuthState called");
+      if (
+        event === "SIGNED_IN" ||
+        (event === "TOKEN_REFRESHED" && !_session && currentSession)
+      ) {
         router.refresh();
       }
 
@@ -61,10 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // router.push("/signin");
       }
 
+      _session.current = currentSession;
       setSession(currentSession);
     });
 
-    return () => subscription.unsubscribe();
+    // return () => subscription.unsubscribe();
   }, []);
 
   const value = useMemo(

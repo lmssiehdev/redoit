@@ -1,11 +1,16 @@
-import { Navbar } from "@/components/supabase/Navbar";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+"use client";
+import { UserNav } from "@/components/Navbar";
+import { AuthProvider, useUser } from "@/context/AuthProvider";
+import { DateProvider } from "@/context/DateProvider";
+import { HabitsProvider } from "@/context/HabitsProvider";
+import { ReplicacheProvider } from "@/context/ReplicacheProvider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { cookies } from "next/headers";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthProvider";
-import { UserNav } from "@/components/Navbar";
+import Link from "next/link";
+import { cn } from "@/utils/misc";
+import { buttonVariants } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
 
 const virgilFont = localFont({
   src: "../../public/fonts/Virgil.woff2",
@@ -55,31 +60,48 @@ const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookiesStore = cookies();
-  const supabase = createServerComponentClient({
-    cookies: () => cookiesStore,
-  });
-  console.log("layout loaded");
-  // const { data: session } = await supabase.auth.getUser();
   return (
-    <html lang="en">
-      <body className={`${virgilFont.variable} font-handrawn`}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${virgilFont.variable} font-handrawn max-w-screen-md w-full !mx-auto px-2`}
+      >
         <AuthProvider>
-          <div className="flex justify-between py-10 container mx-auto">
-            <h1 className="font-bold">Redoit</h1>
+          <div className="flex justify-between py-7  mx-auto">
+            <Link href="/">Redoit</Link>
             <UserNav />
           </div>
-          <div>
-            <Navbar />
-          </div>
-          <main className="container mx-auto">{children}</main>
+          <main className=" mx-auto">
+            <Content>{children}</Content>
+          </main>
         </AuthProvider>
       </body>
     </html>
+  );
+}
+
+function Content({ children }: { children: React.ReactNode }) {
+  const { session } = useUser();
+
+  return (
+    <div>
+      {session?.user?.id != null ? (
+        <>
+          {children}
+          <Toaster />
+        </>
+      ) : (
+        <Link
+          href="/auth/signin"
+          className={cn(buttonVariants({ variant: "link" }), "text-lg")}
+        >
+          Login
+        </Link>
+      )}
+    </div>
   );
 }

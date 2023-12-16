@@ -2,7 +2,7 @@ import { VariantProps, cva } from "class-variance-authority";
 import { Slot } from "@radix-ui/react-slot";
 import { forwardRef } from "react";
 import { cn } from "@/utils/misc";
-import ReactRough, { Rectangle } from "rough-react-wrapper";
+import ReactRough, { Circle, Rectangle } from "rough-react-wrapper";
 
 const DayVariants = cva(
   "border-dashed border-[1px] border-black/60 text-white aspect-square",
@@ -54,11 +54,13 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
                 height={200}
                 x={10}
                 y={10}
-                stroke={""}
+                stroke={"4"}
                 fill={color}
-                roughness={status === "skipped" ? 10 : 3}
-                hachureGap={status === "skipped" ? 8 : 3}
-                fillStyle={status === "checked" ? "cross-hatch" : "hachure "}
+                dashGap={status === "skipped" ? 1 : 2}
+                roughness={3}
+                hachureGap={status === "skipped" ? 10 : 3}
+                fillStyle={status === "checked" ? "zigzag" : "dashed"}
+                bowing={status === "skipped" ? 4 : 1}
               />
             </ReactRough>
           </div>

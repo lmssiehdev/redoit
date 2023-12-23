@@ -29,7 +29,7 @@ export function DateProvider({ children }: { children: React.ReactNode }) {
         currDate,
         calendarDates: dateArray,
       } as ContextValue),
-    [dateArray]
+    [dateArray, currDate, goToNextDay, goToPrevDay]
   );
 
   return (

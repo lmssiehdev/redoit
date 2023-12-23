@@ -1,7 +1,7 @@
-import { VariantProps, cva } from "class-variance-authority";
-import { Slot } from "@radix-ui/react-slot";
-import { forwardRef, memo } from "react";
 import { cn } from "@/utils/misc";
+import { Slot } from "@radix-ui/react-slot";
+import { VariantProps, cva } from "class-variance-authority";
+import { forwardRef } from "react";
 import ReactRough, { Rectangle } from "rough-react-wrapper";
 
 const DayVariants = cva(
@@ -31,27 +31,6 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Rect = memo(
-  ({ color, status }: { status: "checked" | "skipped"; color: string }) => (
-    <ReactRough renderer={"svg"}>
-      <Rectangle
-        seed={100}
-        width={200}
-        height={200}
-        x={10}
-        y={10}
-        stroke={"4"}
-        fill={color}
-        dashGap={status === "skipped" ? 1 : 2}
-        roughness={1}
-        hachureGap={status === "skipped" ? 10 : 2}
-        fillStyle={status === "checked" ? "hachure" : "dashed"}
-        bowing={20}
-      />
-    </ReactRough>
-  )
-);
-
 export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, variant, size, asChild = false, status, color, ...props },
@@ -69,10 +48,26 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {status && (
           <div className="-translate-x-[50%] -translate-y-[50%] pointer-events-none">
-            <Rect color={color} status={status} />
+            <ReactRough renderer={"svg"}>
+              <Rectangle
+                seed={100}
+                width={200}
+                height={200}
+                x={10}
+                y={10}
+                stroke={"4"}
+                fill={color}
+                dashGap={status === "skipped" ? 1 : 2}
+                roughness={1}
+                hachureGap={status === "skipped" ? 10 : 2}
+                fillStyle={status === "checked" ? "hachure" : "dashed"}
+                bowing={20}
+              />
+            </ReactRough>
           </div>
         )}
       </Comp>
     );
   }
 );
+Day.displayName = "Day";

@@ -74,30 +74,6 @@ export function HabitProvider({
     [completedDates]
   );
 
-  const markDate = (date: string) => {
-    const generateDateId = (habitId: string, date: string) =>
-      `date/${habitId}/${date}`;
-    const dateId = generateDateId(habitId, date);
-
-    if (datesObject[date] === "skipped") {
-      rep.mutate.deleteDate({
-        dateId,
-        habitId,
-      });
-      return;
-    }
-
-    const newStatus = datesObject[date] === "checked" ? "skipped" : "checked";
-    rep?.mutate.markHabit({
-      id: habitId,
-      args: {
-        dateId,
-        status: newStatus,
-      },
-    });
-    return;
-  };
-
   const deleteHabit = () => {
     rep?.mutate.deleteHabit(habitId);
     toast({
@@ -111,10 +87,33 @@ export function HabitProvider({
         completedDates: datesObject,
         habitData,
         habitId,
-        markDate,
         deleteHabit,
+        markDate: (date: string) => {
+          const generateDateId = (habitId: string, date: string) =>
+            `date/${habitId}/${date}`;
+          const dateId = generateDateId(habitId, date);
+
+          if (datesObject[date] === "skipped") {
+            rep.mutate.deleteDate({
+              dateId,
+              habitId,
+            });
+            return;
+          }
+
+          const newStatus =
+            datesObject[date] === "checked" ? "skipped" : "checked";
+          rep?.mutate.markHabit({
+            id: habitId,
+            args: {
+              dateId,
+              status: newStatus,
+            },
+          });
+          return;
+        },
       } as ContextValue),
-    [datesObject, habitData]
+    [datesObject, habitData, habitId, rep]
   );
 
   return (

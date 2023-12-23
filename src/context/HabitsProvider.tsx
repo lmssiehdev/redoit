@@ -55,7 +55,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
         habits: habits as unknown as ContextValue["habits"],
         habitsObject,
       } as ContextValue),
-    [habits]
+    [habits, habitsObject]
   );
 
   return (

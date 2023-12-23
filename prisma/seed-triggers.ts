@@ -9,6 +9,10 @@ if (!dbUrl) {
 const sql = postgres(dbUrl);
 
 async function main() {
+  // insert into public.users (id, name, email, avatar_url )
+  // new.raw_user_meta_data->>'name',
+  // new.raw_user_meta_data->>'email',
+  // new.raw_user_meta_data->>'avatar_url
   await sql`
      create or replace function public.handle_new_user()
      returns trigger as $$

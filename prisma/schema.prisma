@@ -16,10 +16,14 @@ generator js {
 }
 
 model User {
-  id    String @id @db.Uuid
-  email String @default("example@gmail.com")
-
+  id              String            @id @db.Uuid
+  // username String
+  email           String            @default("example@gmail.com")
+  name            String            @default("")
+  avatar_url      String            @default("")
+  isLifetime      Boolean           @default(false)
   ReplicacheSpace ReplicacheSpace[]
+  Subscription    Subscription[]
 
   @@map("users")
 }
@@ -85,4 +89,54 @@ model CompletedDate {
 
   @@id([habitId, date])
   @@map("completed_dates")
+}
+
+// lemonsqueezy stuff
+
+model Plan {
+  id            Int            @id @default(autoincrement())
+  productId     Int
+  variantId     Int            @unique
+  name          String? // Product name
+  description   String?
+  variantName   String
+  sort          Int
+  status        String
+  price         Int
+  interval      String
+  intervalCount Int            @default(1)
+  subscriptions Subscription[]
+}
+
+model WebhookEvent {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  eventName       String
+  processed       Boolean  @default(false)
+  body            Json
+  processingError String?
+}
+
+model Subscription {
+  id                 String    @id @default(uuid())
+  lemonSqueezyId     Int       @unique
+  orderId            Int       @unique
+  name               String
+  email              String
+  status             String
+  renewsAt           DateTime?
+  endsAt             DateTime?
+  trialEndsAt        DateTime?
+  resumesAt          DateTime?
+  price              Int
+  plan               Plan      @relation(fields: [planId], references: [id])
+  planId             Int
+  user               User      @relation(fields: [userId], references: [id])
+  userId             String    @db.Uuid
+  isUsageBased       Boolean   @default(false)
+  subscriptionItemId Int?      @unique
+  isLifetime         Boolean   @default(false)
+  orderItemId        Int?      @unique
+
+  @@index([planId, lemonSqueezyId])
 }

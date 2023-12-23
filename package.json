@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^9.7.2",
+    "@fontsource/poppins": "^5.0.8",
     "@hookform/resolvers": "^3.3.2",
     "@lemonsqueezy/lemonsqueezy.js": "^1.2.4",
     "@prisma/client": "^5.5.2",

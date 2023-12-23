@@ -1,8 +1,8 @@
 "use client";
 import { UserNav } from "@/components/Navbar";
 import { buttonVariants } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider, useUser } from "@/context/AuthProvider";
+import "@fontsource/poppins";
+import "@fontsource/poppins/500.css";
 import { cn } from "@/utils/misc";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -13,6 +13,12 @@ const virgilFont = localFont({
   src: "../../public/fonts/Virgil.woff2",
   display: "swap",
   variable: "--font-handrawn",
+});
+
+const walsheimFont = localFont({
+  src: "../../public/fonts/GT-Walsheim-Ultra-Bold.ttf",
+  display: "swap",
+  variable: "--font-walsheim",
 });
 
 const APP_NAME = "PWA App";

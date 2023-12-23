@@ -20,7 +20,8 @@ module.exports = {
     extend: {
       fontFamily: {
         handrawn: ["var(--font-handrawn)", ...fontFamily.sans],
-        normal: ["Palatino Linotype"],
+        normal: ["Poppins"],
+        walsheim: ["var(--font-walsheim)"],
       },
       colors: {
         border: "hsl(var(--border))",

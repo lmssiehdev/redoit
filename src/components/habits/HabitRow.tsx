@@ -17,6 +17,7 @@ import { LightningBoltIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useDate } from "@/context/DateProvider";
 import { memo } from "react";
+import { DayWithToolTip } from "@/components/calendar/Monthly";
 
 function HabitRow() {
   const {
@@ -33,7 +34,6 @@ function HabitRow() {
   return (
     <>
       {/* <div className="flex items-center justify-between border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted py-2"> */}
-      {/* {JSON.stringify(streak)} */}
       <div className="flex items-center justify-between group">
         <Link
           href={`habit/${habitId.replace("habit/", "")}`}
@@ -55,16 +55,17 @@ function HabitRow() {
       <div className="flex gap-3 justify-around items-center">
         {dateArray.map((date) => {
           return (
-            <Day
-              status={datesObject[date]}
+            <DayWithToolTip
+              date={date}
               key={date}
-              onClick={() => markDate(date)}
-              color={v?.color}
+              markDate={markDate}
+              habitData={v}
+              completedDates={datesObject}
             />
           );
         })}
       </div>
-      <span className="flex gap-1.5  items-center text-sm">
+      <span className="hidden sm:flex gap-1.5  items-center text-sm">
         <LightningBoltIcon />
         {currentStreak}
       </span>
@@ -89,7 +90,7 @@ export function DataTableRowActions({
         <Button
           size="icon"
           variant="ghost"
-          className="group-hover:visible data-[state=open]:visible invisible"
+          className="group-hover:visible data-[state=open]:visible sm:invisible"
         >
           <Pencil1Icon />
           <span className="sr-only">Open menu</span>
@@ -97,12 +98,14 @@ export function DataTableRowActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem asChild>
-          <Link href={`edit/${habitId}`}>Edit</Link>
+          <Link href={`edit/${habitId}`} className="font-normal">
+            Edit
+          </Link>
         </DropdownMenuItem>
         {/* <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={deleteFn}>
+        <DropdownMenuItem onClick={deleteFn} className="font-normal">
           Delete
           {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
         </DropdownMenuItem>

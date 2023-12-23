@@ -13,7 +13,7 @@ export function HabitList() {
 
   return (
     <>
-      <div className="my-2 grid md:grid-cols-[minmax(0px,200px),6fr,40px] gap-2">
+      <div className="my-2 flex justify-between items-center md:grid md:grid-cols-[minmax(0px,200px),6fr,40px] gap-2 ">
         <VerticalCalendarWrapper />
       </div>
 
@@ -34,9 +34,10 @@ export function HabitList() {
           href="/create"
           className={cn(
             buttonVariants({
-              size: "sm",
+              variant: "jounral",
+              // size: "sm",
             }),
-            "text-green-700 bg-green-200 hover:bg-green-200/50 shadow-sm"
+            "text-green-900 bg-green-100 hover:bg-green-100/50"
           )}
         >
           Add Habit

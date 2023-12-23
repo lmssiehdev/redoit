@@ -27,6 +27,8 @@ function FormWrapper() {
 
   if (!habitData?.name) return null;
 
+  const { color, name, frequency } = habitData;
+
   const handleHabitUpdate = (args: Partial<Habit.Definition>) => {
     const updatedHabit = {
       ...habitData,
@@ -48,7 +50,7 @@ function FormWrapper() {
       <ProfileForm
         // key={habitData?.name}
         onSubmit={handleHabitUpdate}
-        args={{ name: habitData?.name, color: habitData?.color as any }}
+        args={{ color, name, frequency }}
       />
     </div>
   );

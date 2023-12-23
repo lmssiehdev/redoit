@@ -15,27 +15,25 @@ export function Main() {
   const { habits } = useHabits();
 
   return (
-    <div>
-      <div className="max-w-[600px] w-full mx-auto">
-        {habits.length === 0 ? (
-          <div className="flex flex-col gap-3">
-            <div>Get started</div>
-            <Link
-              href="/create"
-              className={cn(
-                buttonVariants({ variant: "jounral" }),
-                "w-fit text-green-700 bg-green-200 hover:bg-green-200/50"
-              )}
-            >
-              Add Habit
-            </Link>
-          </div>
-        ) : (
-          <>
-            <HabitList habits={habits} />
-          </>
-        )}
-      </div>
+    <div className="max-w-screen-sm w-full mx-auto">
+      {habits.length === 0 ? (
+        <div className="flex flex-col gap-3">
+          <div>Get started</div>
+          <Link
+            href="/create"
+            className={cn(
+              buttonVariants({ variant: "jounral" }),
+              "w-fit text-green-700 bg-green-200 hover:bg-green-200/50"
+            )}
+          >
+            Add Habit
+          </Link>
+        </div>
+      ) : (
+        <>
+          <HabitList habits={habits} />
+        </>
+      )}
     </div>
   );
 }

@@ -16,14 +16,13 @@ export function AppBackButton() {
     <Link
       href="/web"
       className={cn(
-        buttonVariants({ variant: "ghost" })
+        buttonVariants({ variant: "ghost" }),
+        "flex items-center w-fit"
         // "absolute left-4 top-4 md:left-8 md:top-8"
       )}
     >
-      <>
-        <ChevronLeftIcon className="mr-2 h-4 w-4" />
-        Back
-      </>
+      <ChevronLeftIcon className="mr-2 h-4 w-4" />
+      Back
     </Link>
   );
 }
@@ -44,23 +43,17 @@ function FormWrapper() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleCreateMessage = ({
-    name,
-    color,
-  }: {
-    name: string;
-    color: string;
-  }) => {
+  const handleCreateMessage = (args: Partial<Habit.Definition>) => {
     const habit = {
       ...HABIT_TEMPLATE,
       id: nanoid(),
-      name,
-      color,
+      ...args,
     } as Habit.Definition;
 
     rep?.mutate.createHabit(habit);
     toast({
       description: "New habit added! 🌟",
+      duration: 1000,
     });
     router.push("/web");
   };

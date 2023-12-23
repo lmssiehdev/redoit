@@ -50,5 +50,6 @@ export function useDateNavigator() {
     dateArray: state.dateArray,
     goToNextDay: () => dispatch({ type: "goToNextDay" }),
     goToPrevDay: () => dispatch({ type: "goToPrevDay" }),
+    currDate: state.date,
   };
 }

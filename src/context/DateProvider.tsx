@@ -1,11 +1,13 @@
 "use client";
 
 import { useDateNavigator } from "@/hooks/useDayNavigation";
+import { Dayjs } from "dayjs";
 import { createContext, useContext, useMemo } from "react";
 
 type ContextValue = {
   goToPrevDay: () => void;
   goToNextDay: () => void;
+  currDate: Dayjs;
   calendarDates: string[];
 };
 const DateContext = createContext<ContextValue>({} as ContextValue);
@@ -17,13 +19,14 @@ export function useDate() {
 }
 
 export function DateProvider({ children }: { children: React.ReactNode }) {
-  const { dateArray, goToNextDay, goToPrevDay } = useDateNavigator();
+  const { dateArray, currDate, goToNextDay, goToPrevDay } = useDateNavigator();
 
   const value = useMemo(
     () =>
       ({
         goToNextDay,
         goToPrevDay,
+        currDate,
         calendarDates: dateArray,
       } as ContextValue),
     [dateArray]

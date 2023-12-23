@@ -1,12 +1,12 @@
-"use client";
-import { UserNav } from "@/components/Navbar";
-import { buttonVariants } from "@/components/ui/button";
+import { getSubscription } from "@/app/billing/page";
+import { Content } from "@/app/page";
+import { AuthProvider } from "@/context/AuthProvider";
 import "@fontsource/poppins";
 import "@fontsource/poppins/500.css";
-import { cn } from "@/utils/misc";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import Link from "next/link";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 const virgilFont = localFont({
@@ -63,45 +63,29 @@ const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createServerComponentClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const sub = session && (await getSubscription(session?.user.id!));
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${virgilFont.variable} font-handrawn max-w-screen-md w-full !mx-auto px-2`}
+        className={`${virgilFont.variable} ${walsheimFont.variable}  font-handrawn max-w-screen-md w-full !mx-auto px-2 `}
       >
-        <AuthProvider>
-          <UserNav />
+        <AuthProvider initialSession={session} initialSub={sub}>
           <main className=" mx-auto">
             <Content>{children}</Content>
           </main>
         </AuthProvider>
       </body>
     </html>
-  );
-}
-
-function Content({ children }: { children: React.ReactNode }) {
-  const { session } = useUser();
-
-  return (
-    <div>
-      {session?.user?.id != null ? (
-        <>
-          {children}
-          <Toaster />
-        </>
-      ) : (
-        <Link
-          href="/auth/signin"
-          className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-        >
-          Login
-        </Link>
-      )}
-    </div>
   );
 }

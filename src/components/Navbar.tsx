@@ -14,13 +14,18 @@ import { useUser } from "@/context/AuthProvider";
 import Link from "next/link";
 
 export function UserNav() {
-  const { session, signIn, signOut } = useUser();
+  const { session, signIn, signOut, isPremium } = useUser();
 
   return (
     <div className="font-normal">
       <div className="flex justify-between py-7  mx-auto">
-        <Link href="/" className="font-bold">
+        <Link href="/" className="font-walsheim text-xl">
           Redoit
+          {isPremium && (
+            <span className="bg-yellow-500 text-xs h-fit px-1 rounded ml-2">
+              Pro
+            </span>
+          )}
         </Link>
         {session === null ? (
           <button onClick={() => signIn()}>Sign In</button>
@@ -37,7 +42,10 @@ export function UserNav() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">shadcn</p>
+                  <p className="text-sm font-medium leading-none">
+                    {/* * Temp: get this from users table. */}
+                    {session.user.user_metadata.name}
+                  </p>
                   <p className="text-xs leading-none text-muted-foreground">
                     {session.user.email}
                   </p>

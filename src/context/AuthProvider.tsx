@@ -4,6 +4,7 @@ import {
   Session,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useContext,
@@ -12,7 +13,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
 
 type ContextValue = {
   session: any;
@@ -27,39 +27,38 @@ export function useUser() {
   return context;
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+export function AuthProvider({
+  children,
+  initialSession,
+  initialSub,
+}: {
+  initialSession: Session | null;
+  children: React.ReactNode;
+  initialSub: Record<string, unknown> | null;
+}) {
+  const [sub, setSub] = useState<Record<string, unknown> | null>(
+    () => initialSub
+  );
+  const [session, setSession] = useState<Session | null>(() => initialSession);
   const router = useRouter();
   const supabase = createClientComponentClient();
-
-  /*
-      * Note sure I need this, yet.
-      useEffect(() => {
-      const searchParams = new URLSearchParams(window?.location?.hash ?? '');
-      const access_token = searchParams.get('#access_token');
-      const refresh_token = searchParams.get('refresh_token');
-
-      if (access_token && refresh_token) {
-        supabase.auth.setSession({ access_token, refresh_token });
-        router.push('/');
-        setInitial(true);
-      } else if (!accessToken) {
-        window.location.href = '/signin';
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-  */
   let _session = useRef<Session | null>(null);
 
   useEffect(() => {
     getActiveSession();
+    getSub();
     async function getActiveSession() {
       const {
         data: { session: activeSession },
       } = await supabase.auth.getSession();
       _session.current = activeSession;
       setSession(activeSession);
+    }
+
+    async function getSub() {
+      const res = await fetch("/api/user");
+      const { sub } = await res.json();
+      setSub(sub);
     }
 
     const {
@@ -81,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(currentSession);
     });
 
-    // return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const value = useMemo(
@@ -106,8 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
         },
         signOut: async () => await supabase.auth.signOut(),
+        isPremium: sub,
       } as ContextValue),
-    [session]
+    [session, sub]
   );
 
   return (

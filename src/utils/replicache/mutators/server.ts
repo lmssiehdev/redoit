@@ -126,3 +126,38 @@ export async function createHabit({
   });
   return;
 }
+
+export async function updateHabit({
+  tx,
+  args,
+  nextVersion,
+  spaceId,
+}: {
+  tx: PrismaTx;
+  args: {
+    id: string;
+    args: Partial<Habit.Definition>;
+  };
+  nextVersion: number;
+  spaceId: string;
+}) {
+  // * naming is hard, I know.
+  const { args: habit } = args;
+  const filteredValues = Object.keys(habit).map((key) => [
+    key,
+    habit[key as keyof typeof habit],
+  ]);
+  console.log({
+    filteredValues,
+  });
+  await tx.habit.update({
+    where: {
+      id: args.id.replace("habit/", ""),
+      spaceId,
+    },
+    data: {
+      ...Object.fromEntries(filteredValues),
+      version: nextVersion,
+    },
+  });
+}

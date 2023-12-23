@@ -10,12 +10,14 @@ import {
   createHabit,
   deleteDate,
   markHabit,
+  updateHabit,
 } from "@/utils/replicache/mutators/server";
 import { getSpaceVersion, updateSpaceVersion } from "@/utils/replicache/space";
 import { Prisma } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import Pusher from "pusher";
 import { z } from "zod";
 
 const mutationSchema = z.object({
@@ -184,12 +186,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
         timeout: 10000, // default: 5000
       }
     );
-    await sendPusherPoke();
+    await Poke();
 
     return NextResponse.json({
       done: true,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       error,
     });
@@ -221,37 +224,15 @@ async function deleteHabit({
   return;
 }
 
-async function updateHabit({
-  tx,
-  args,
-  nextVersion,
-  spaceId,
-}: {
-  tx: PrismaTx;
-  args: {
-    id: string;
-    args: Partial<Habit.Definition>;
-  };
-  nextVersion: number;
-  spaceId: string;
-}) {
-  // * naming is hard, I know.
-  const { args: habit } = args;
-  const filteredValues = Object.keys(habit).map((key) => [
-    key,
-    habit[key as keyof typeof habit],
-  ]);
-  console.log({
-    filteredValues,
+async function Poke() {
+  const pusher = new Pusher({
+    appId: "1640260",
+    key: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_KEY!,
+    secret: process.env.NEXT_PUBLIC_REPLICHAT_PUSHER_SECRET!,
+    cluster: "us2",
+    useTLS: true,
   });
-  await tx.habit.update({
-    where: {
-      id: args.id.replace("habit/", ""),
-      spaceId,
-    },
-    data: {
-      ...Object.fromEntries(filteredValues),
-      version: nextVersion,
-    },
-  });
+  const t0 = Date.now();
+  await pusher.trigger("default", "poke", {});
+  console.log("Sent poke in", Date.now() - t0);
 }

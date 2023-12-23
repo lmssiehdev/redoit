@@ -1,5 +1,37 @@
 "use client";
 
+import { LandingPageTrackerDemo } from "@/components/LandingPageTrackerDemo";
+import { UserNav } from "@/components/Navbar";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
+import { useUser } from "@/context/AuthProvider";
+import { DateProvider } from "@/context/DateProvider";
+import { cn } from "@/utils/misc";
+import Link from "next/link";
+
 export default function Page() {
-  return <div>landing goes here</div>;
+}
+
+export function Content({ children }: { children: React.ReactNode }) {
+  const { session } = useUser();
+
+  return (
+    <div>
+      <UserNav />
+
+      {session?.user?.id != null ? (
+        <>
+          {children}
+          <Toaster />
+        </>
+      ) : (
+        <Link
+          href="/auth/signin"
+          className={cn(buttonVariants({ variant: "link" }), "text-lg")}
+        >
+          Login
+        </Link>
+      )}
+    </div>
+  );
 }

@@ -31,6 +31,18 @@ const colors = [
   "#e55a79",
   "#9AC885",
 ] as const;
+
+const getFrequencyArray = (array: string[]) =>
+  Array(7)
+    .fill(false)
+    .map((_, index) => array.includes(String(index)));
+
+const turnFrequencyArrayInto = (array: boolean[]) =>
+  array.reduce((prev, curr, index) => {
+    if (curr) prev.push(String(index));
+
+    return prev;
+  }, [] as string[]);
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -38,15 +50,23 @@ const formSchema = z.object({
   color: z.enum(colors, {
     required_error: "You need to select a notification type.",
   }),
-  frequency: z.number().or(z.string()).array().length(7),
+  frequency: z.string().array(), //.length(7),
 });
 
 export function ProfileForm({
   onSubmit,
   args,
 }: {
-  args?: { name: string; color: (typeof colors)[number] };
-  onSubmit: ({ name, color }: { name: string; color: string }) => void;
+  args?: { name: string; color: (typeof colors)[number]; frequency: boolean[] };
+  onSubmit: ({
+    name,
+    color,
+    frequency,
+  }: {
+    name: string;
+    color: string;
+    frequency: boolean[];
+  }) => void;
 }) {
   const isEditing = useMemo(() => args?.name != undefined, [args]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,15 +74,16 @@ export function ProfileForm({
     defaultValues: {
       name: args?.name ?? "",
       color: args?.color ?? "#81968d",
-      frequency: [0, 1, 2, 3, 4, 5, 6],
+      frequency: args?.frequency
+        ? turnFrequencyArrayInto(args?.frequency)
+        : [0, 1, 2, 3, 4, 5, 6].map(String),
     },
   });
 
   function handleFormSubmit(values: z.infer<typeof formSchema>) {
-    const { name, color } = values;
-    onSubmit({ name, color });
+    const { name, color, frequency } = values;
+    onSubmit({ name, color, frequency: getFrequencyArray(frequency) });
     form.setValue("name", "");
-    console.log(values);
   }
 
   return (
@@ -128,14 +149,9 @@ export function ProfileForm({
               <FormControl>
                 <ToggleGroup
                   type="multiple"
-                  onValueChange={(t) => {
-                    field.onChange(t);
-                    const arr = Array(7).fill(false);
-                    console.log(t);
-                  }}
-                  // defaultChecked={field.value}
-                  defaultValue={[0, 1, 2, 3, 4, 5, 6].map(String)}
+                  onValueChange={field.onChange}
                   className="gap-0"
+                  defaultValue={field.value}
                 >
                   {days.map((day, index) => (
                     <ToggleGroupItem
@@ -145,6 +161,7 @@ export function ProfileForm({
                       className="flex-1 h-6 w-6 bg-purple-50 hover:bg-purple-30 text-center p-1 data-[state=on]:bg-purple-100  data-[state=on]:text-purple-400 border-x border-y-0 border-solid border-x-purple-200 text-purple-300 first:border-0 last:border-0 rounded-none"
                     >
                       {day.substring(0, 3)}
+                      {/* {JSON.stringify(index.toString())} */}
                     </ToggleGroupItem>
                   ))}
                 </ToggleGroup>
@@ -153,7 +170,18 @@ export function ProfileForm({
             </FormItem>
           )}
         />
-        <Button type="submit">{isEditing ? "Update" : "Add"}</Button>
+        <Button
+          type="submit"
+          variant="jounral"
+          className={cn(
+            {
+              "text-green-700 bg-green-200 hover:bg-green-200/50": true,
+            },
+            "w-fit"
+          )}
+        >
+          {isEditing ? "Update" : "Add"}
+        </Button>
       </form>
     </Form>
   );

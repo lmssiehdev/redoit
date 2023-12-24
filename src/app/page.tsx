@@ -18,20 +18,8 @@ export function Content({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <UserNav />
-
-      {session?.user?.id != null ? (
-        <>
-          {children}
-          <Toaster />
-        </>
-      ) : (
-        <Link
-          href="/auth/signin"
-          className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-        >
-          Login
-        </Link>
-      )}
+      {children}
+      <Toaster />
     </div>
   );
 }

@@ -44,12 +44,10 @@ const turnFrequencyArrayInto = (array: boolean[]) =>
     return prev;
   }, [] as string[]);
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  name: z.string().min(1, {
+    message: "Please provide a valid name.",
   }),
-  color: z.enum(colors, {
-    required_error: "You need to select a notification type.",
-  }),
+  color: z.string(),
   frequency: z.string().array(), //.length(7),
 });
 
@@ -57,7 +55,7 @@ export function ProfileForm({
   onSubmit,
   args,
 }: {
-  args?: { name: string; color: (typeof colors)[number]; frequency: boolean[] };
+  args?: { name: string; color: string; frequency: boolean[] };
   onSubmit: ({
     name,
     color,

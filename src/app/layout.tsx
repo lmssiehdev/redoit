@@ -1,25 +1,13 @@
 import { getSubscription } from "@/app/billing/page";
 import { Content } from "@/app/page";
 import { AuthProvider } from "@/context/AuthProvider";
+import { virgilFont, walsheimFont } from "@/styles/font";
 import "@fontsource/poppins";
 import "@fontsource/poppins/500.css";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import "./globals.css";
-
-const virgilFont = localFont({
-  src: "../../public/fonts/Virgil.woff2",
-  display: "swap",
-  variable: "--font-handrawn",
-});
-
-const walsheimFont = localFont({
-  src: "../../public/fonts/GT-Walsheim-Ultra-Bold.ttf",
-  display: "swap",
-  variable: "--font-walsheim",
-});
 
 const APP_NAME = "PWA App";
 const APP_DEFAULT_TITLE = "My Awesome PWA App";

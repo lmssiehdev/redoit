@@ -78,6 +78,7 @@ export function HabitProvider({
     rep?.mutate.deleteHabit(habitId);
     toast({
       description: "Habit deleted.",
+      duration: 1500,
     });
   };
 

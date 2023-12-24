@@ -18,7 +18,6 @@ export function AppBackButton() {
       className={cn(
         buttonVariants({ variant: "ghost" }),
         "flex items-center w-fit"
-        // "absolute left-4 top-4 md:left-8 md:top-8"
       )}
     >
       <ChevronLeftIcon className="mr-2 h-4 w-4" />

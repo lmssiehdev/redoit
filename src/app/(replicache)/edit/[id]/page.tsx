@@ -40,6 +40,7 @@ function FormWrapper() {
     });
     toast({
       description: "Updated and ready for success.",
+      duration: 1500,
     });
     router.push("/web");
   };

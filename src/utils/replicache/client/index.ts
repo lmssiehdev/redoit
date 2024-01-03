@@ -111,7 +111,7 @@ export async function getLastMutationIds({
     where: {
       // replicacheClientGroupId: clientGroundId,
       lastModifiedVersion: {
-        lt: fromVersion,
+        gt: fromVersion,
       },
     },
     select: {
@@ -121,7 +121,7 @@ export async function getLastMutationIds({
   });
 
   const formatedDate = Object.fromEntries(
-    rows.map((r) => [r.id, r.lastMutationId])
+    rows.map((r) => [r.id, r.lastMutationId]),
   );
 
   return {

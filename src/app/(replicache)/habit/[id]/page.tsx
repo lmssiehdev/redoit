@@ -12,26 +12,26 @@ import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { convertHexToRGBA } from "@/utils/misc";
-import Link from "next/link";
 
 export default function HabitPage({ params }: { params: { id: string } }) {
+  const habitId = `habit/${params.id}`;
+
   return (
     <div>
       <AppBackButton />
-      <HabitProvider habitId={`habit/${params.id}`}>
-        <Content />
+      <HabitProvider habitId={habitId}>
+        <Content paramsId={habitId} />
       </HabitProvider>
     </div>
   );
 }
 
-function Content() {
+function Content({ paramsId }: { paramsId: string }) {
   const router = useRouter();
-  const { rep } = useReplicacheFromContext();
   const { completedDates, habitData, habitId, markDate, deleteHabit } =
     useHabit();
-  if (!habitData?.name) return null;
+  if (!habitData || habitData.id != paramsId)
+    return <div>Habits doesn't exist : /</div>;
 
   console.log(completedDates, Object.values(completedDates).length);
   function handleDeleteHabit() {

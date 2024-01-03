@@ -13,19 +13,20 @@ export default function HabitPage({ params }: { params: { id: string } }) {
     <div>
       <AppBackButton />
       <HabitProvider habitId={`habit/${params.id}`}>
-        <FormWrapper />
+        <Content paramsId={`habit/${params.id}`} />
       </HabitProvider>
     </div>
   );
 }
 
-function FormWrapper() {
+function Content({ paramsId }: { paramsId: string }) {
   const { rep } = useReplicacheFromContext();
   const { toast } = useToast();
   const { completedDates, habitData, habitId } = useHabit();
   const router = useRouter();
 
-  if (!habitData?.name) return null;
+  if (!habitData || habitData.id != paramsId)
+    return <div>Habits doesn't exist : /</div>;
 
   const { color, name, frequency } = habitData;
 
@@ -46,10 +47,9 @@ function FormWrapper() {
   };
 
   return (
-    <div className="space-y-2 max-w-[400px] mx-auto">
-      <h1 className="mt-2 mb-6 text-xl">Edit Habit</h1>
+    <div className="mx-auto max-w-[400px] space-y-2">
+      <h1 className="mb-6 mt-2 text-xl">Edit Habit</h1>
       <ProfileForm
-        // key={habitData?.name}
         onSubmit={handleHabitUpdate}
         args={{ color, name, frequency }}
       />

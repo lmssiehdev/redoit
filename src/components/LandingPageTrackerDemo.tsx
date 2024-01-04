@@ -2,8 +2,10 @@
 
 import { DayWithToolTip } from "@/components/calendar/Monthly";
 import VerticalCalendarWrapper from "@/components/calendar/Vertical";
+import CurrentStreak from "@/components/habits/CurrentStreak";
 import { useDate } from "@/context/DateProvider";
 import { useCalculateStreak } from "@/hooks/useCalculateStreak";
+import { Habit } from "@/utils/habits";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
 import { useImmerReducer } from "use-immer";
 
@@ -126,11 +128,11 @@ export function LandingPageTrackerDemo() {
                 );
               })}
             </div>
-            <span className="hidden items-center gap-1.5  text-sm sm:flex">
-              <LightningBoltIcon />
-              {/* Move me into my own  */}
-              {useCalculateStreak(value.completedDates).currentStreak}
-            </span>
+            <CurrentStreak
+              completedDates={
+                value.completedDates as Habit.Definition["completedDates"]
+              }
+            />
           </div>
         );
       })}

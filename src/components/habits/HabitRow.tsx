@@ -18,23 +18,23 @@ import Link from "next/link";
 import { useDate } from "@/context/DateProvider";
 import { memo } from "react";
 import { DayWithToolTip } from "@/components/calendar/Monthly";
+import CurrentStreak from "@/components/habits/CurrentStreak";
 
 function HabitRow() {
   const {
     deleteHabit,
     markDate,
-    completedDates: datesObject,
+    completedDates,
     habitData: v,
     habitId,
   } = useHabit();
 
   const { calendarDates: dateArray } = useDate();
-  const { currentStreak } = useCalculateStreak(datesObject);
 
   return (
     <>
       {/* <div className="flex items-center justify-between border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted py-2"> */}
-      <div className="flex items-center justify-between group">
+      <div className="group flex items-center justify-between">
         <Link
           href={`habit/${habitId.replace("habit/", "")}`}
           className="flex items-center gap-2 border-l-2 pl-2"
@@ -52,7 +52,7 @@ function HabitRow() {
           />
         </div>
       </div>
-      <div className="flex gap-3 justify-around items-center">
+      <div className="flex items-center justify-around gap-3">
         {dateArray.map((date) => {
           return (
             <DayWithToolTip
@@ -60,15 +60,12 @@ function HabitRow() {
               key={date}
               markDate={markDate}
               habitData={v}
-              completedDates={datesObject}
+              completedDates={completedDates}
             />
           );
         })}
       </div>
-      <span className="hidden sm:flex gap-1.5  items-center text-sm">
-        <LightningBoltIcon />
-        {currentStreak}
-      </span>
+      <CurrentStreak completedDates={completedDates} />
     </>
   );
 }

@@ -110,12 +110,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
             date: completedDate,
           } = date;
           if (deleted) {
-            // if (rowVersion > fromVersion) {
-            //   patch.push({
-            //     op: "del",
-            //     key: `habit/${id}`,
-            //   });
-            // }
+            if (rowVersion > fromVersion) {
+              patch.push({
+                op: "del",
+                key: id,
+              });
+            }
           } else {
             patch.push({
               op: "put",

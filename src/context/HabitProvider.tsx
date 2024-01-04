@@ -42,7 +42,7 @@ export function HabitProvider({
       // list.sort(([, { order: a }], [, { order: b }]) => a - b);
       return list;
     },
-    []
+    [],
   );
   const completedDates = useSubscribe(
     rep,
@@ -54,24 +54,30 @@ export function HabitProvider({
       // list.sort(([, { order: a }], [, { order: b }]) => a - b);
       return list;
     },
-    []
+    [],
   );
 
   const habitData = useMemo(() => {
     const [result] = habits as unknown as [[string, Habit.Definition]];
     if (result == undefined || result.length != 2) return;
-    return result[1];
+    return {
+      ...result[1],
+      id: result[0],
+    };
   }, [habits]);
 
   const datesObject = useMemo(
     () =>
-      completedDates.reduce((prev, [id, status]) => {
-        const tempArr = (id as string).split("/");
-        const date = tempArr[tempArr.length - 1];
-        prev[date as keyof typeof prev] = status;
-        return prev;
-      }, {} as Record<string, "checked" | "skipped">),
-    [completedDates]
+      completedDates.reduce(
+        (prev, [id, status]) => {
+          const tempArr = (id as string).split("/");
+          const date = tempArr[tempArr.length - 1];
+          prev[date as keyof typeof prev] = status;
+          return prev;
+        },
+        {} as Record<string, "checked" | "skipped">,
+      ),
+    [completedDates],
   );
 
   const deleteHabit = () => {
@@ -113,8 +119,8 @@ export function HabitProvider({
           });
           return;
         },
-      } as ContextValue),
-    [datesObject, habitData, habitId, rep]
+      }) as ContextValue,
+    [datesObject, habitData, habitId, rep],
   );
 
   return (

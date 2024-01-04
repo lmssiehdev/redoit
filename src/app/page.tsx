@@ -1,25 +1,41 @@
-"use client";
-
 import { LandingPageTrackerDemo } from "@/components/LandingPageTrackerDemo";
-import { UserNav } from "@/components/Navbar";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/toaster";
-import { useUser } from "@/context/AuthProvider";
+import { Button } from "@/components/ui/button";
+
 import { DateProvider } from "@/context/DateProvider";
-import { cn } from "@/utils/misc";
-import Link from "next/link";
 
 export default function Page() {
+  return (
+    <>
+      <div className="text-center text-3xl md:text-5xl">
+        <h1 className=" font-walsheim">
+          Your radically <br />
+          easy-to-use habit
+          <br /> tracker
+        </h1>
+        <Button variant="jounral" className="my-5">
+          Get Started
+        </Button>
+      </div>
+      <div className="">
+        <div className="mx-auto w-full max-w-screen-sm ">
+          <DateProvider>
+            <LandingPageTrackerDemo />
+          </DateProvider>
+        </div>
+        <p className="text-center text-sm text-gray-600">
+          Like what you see? Sign up now and start tracking
+        </p>
+      </div>
+    </>
+  );
 }
 
-export function Content({ children }: { children: React.ReactNode }) {
-  const { session } = useUser();
-
+function Footer() {
   return (
-    <div>
-      <UserNav />
-      {children}
-      <Toaster />
-    </div>
+    <footer className="flex items-center">
+      <a className="ml-auto" href="https://tally.so/r/wvMWaA" target="_blank">
+        send feedback
+      </a>
+    </footer>
   );
 }

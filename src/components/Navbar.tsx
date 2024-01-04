@@ -1,13 +1,13 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context/AuthProvider";
@@ -18,11 +18,11 @@ export function UserNav() {
 
   return (
     <div className="font-normal">
-      <div className="flex justify-between py-7  mx-auto">
+      <div className="mx-auto flex justify-between  py-7">
         <Link href="/" className="font-walsheim text-xl">
           Redoit
           {isPremium && (
-            <span className="bg-yellow-500 text-xs h-fit px-1 rounded ml-2">
+            <span className="ml-2 h-fit rounded bg-yellow-500 px-1 text-xs">
               Pro
             </span>
           )}

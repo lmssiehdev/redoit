@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { PatchOperation, PullResponse } from "replicache";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 403,
-      }
+      },
     );
 
   const userId = session.user.id;
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         if (fromVersion > currentVersion) {
           throw new Error(
-            `fromVersion ${fromVersion} is from the future - aborting. This can happen in development if the server restarts. In that case, clear appliation data in browser and refresh.`
+            `fromVersion ${fromVersion} is from the future - aborting. This can happen in development if the server restarts. In that case, clear appliation data in browser and refresh.`,
           );
         }
 
@@ -63,12 +64,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
         });
 
         const dates = await tx.completedDate.findMany({
-          // where: {
-          //   AND: [{ version: { lt: fromVersion + 1 } }],
-          // },
+          where: {
+            AND: [{ version: { gt: fromVersion } }],
+          },
         });
 
-        const patch = [];
+        const patch: PatchOperation[] = [];
         for (let message of messages) {
           const {
             id,
@@ -124,17 +125,18 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
           }
         }
-        return {
+        const body: PullResponse = {
           lastMutationIDChanges: lastMutationIds ?? {},
           cookie: currentVersion,
           patch,
         };
+        return body;
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // Required for Replicache to work
         maxWait: 5000, // default: 2000
         timeout: 10000, // default: 5000
-      }
+      },
     );
 
     return NextResponse.json(data);

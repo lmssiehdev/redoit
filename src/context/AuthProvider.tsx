@@ -37,7 +37,7 @@ export function AuthProvider({
   initialSub: Record<string, unknown> | null;
 }) {
   const [sub, setSub] = useState<Record<string, unknown> | null>(
-    () => initialSub
+    () => initialSub,
   );
   const [session, setSession] = useState<Session | null>(() => initialSession);
   const router = useRouter();
@@ -88,26 +88,28 @@ export function AuthProvider({
       ({
         session,
         signIn: async () => {
-          await supabase.auth.signInWithPassword({
-            email: "test@example.com",
-            password: "test",
-          });
-          return;
-          await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-              queryParams: {
-                access_type: "offline",
-                prompt: "consent",
+          if (process.env.NODE_ENV === "development") {
+            await supabase.auth.signInWithPassword({
+              email: "test@example.com",
+              password: "testtest",
+            });
+          } else {
+            await supabase.auth.signInWithOAuth({
+              provider: "google",
+              options: {
+                queryParams: {
+                  access_type: "offline",
+                  prompt: "consent",
+                },
+                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL!}/auth/callback`,
               },
-              redirectTo: "http://localhost:3000/auth/callback",
-            },
-          });
+            });
+          }
         },
         signOut: async () => await supabase.auth.signOut(),
         isPremium: sub,
-      } as ContextValue),
-    [session, sub]
+      }) as ContextValue,
+    [session, sub],
   );
 
   return (

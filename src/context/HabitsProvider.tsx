@@ -2,14 +2,14 @@
 
 import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
 import { Habit } from "@/utils/habits";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { ReadonlyJSONValue } from "replicache";
 import { useSubscribe } from "replicache-react";
-import { unknown } from "zod";
 
 type ContextValue = {
-  habits: Record<string, Habit.Definition>;
+  habits: [string, Habit.Definition][];
   habitsObject: Record<string, Habit.Definition>;
+  isSearching: boolean;
 };
 const HabitsContext = createContext<ContextValue>({} as ContextValue);
 
@@ -22,6 +22,7 @@ export function useHabits() {
 
 export function HabitsProvider({ children }: { children: React.ReactNode }) {
   const { rep } = useReplicacheFromContext();
+  const [isSearching, setIsSearching] = useState(true);
 
   const habits = useSubscribe(
     rep,
@@ -30,10 +31,10 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
         .scan({ prefix: "habit/" })
         .entries()
         .toArray()) as unknown as [[string, ReadonlyJSONValue]][];
-      // list.sort(([, { order: a }], [, { order: b }]) => a - b);
+      setIsSearching(false);
       return list;
     },
-    []
+    [],
   );
 
   const habitsObject = useMemo(
@@ -47,15 +48,16 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
 
         return prev;
       }, {}),
-    [habits]
+    [habits],
   );
   const value = useMemo(
     () =>
       ({
         habits: habits as unknown as ContextValue["habits"],
         habitsObject,
-      } as ContextValue),
-    [habits, habitsObject]
+        isSearching,
+      }) as ContextValue,
+    [habits, habitsObject],
   );
 
   return (

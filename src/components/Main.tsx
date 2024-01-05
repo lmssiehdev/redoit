@@ -1,49 +1,41 @@
 "use client";
 
 import { HabitList } from "@/components/habits/HabitList";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { buttonVariants } from "@/components/ui/button";
 import { useHabits } from "@/context/HabitsProvider";
 import { cn } from "@/utils/misc";
 import Link from "next/link";
 
 export default function Home() {
-  return <Main />;
-}
+  const { habits, isSearching } = useHabits();
 
-export function Main() {
-  const { habits } = useHabits();
+  if (isSearching) {
+    // TODO: use a skeleton
+    return <>loading...</>;
+  }
 
-  return (
-    <div className="max-w-screen-sm w-full mx-auto">
-      {habits.length === 0 ? (
+  if (habits.length === 0) {
+    return (
+      <div className="mx-auto w-full max-w-screen-sm">
         <div className="flex flex-col gap-3">
           <div>Get started</div>
           <Link
             href="/create"
             className={cn(
               buttonVariants({ variant: "jounral" }),
-              "w-fit text-green-700 bg-green-200 hover:bg-green-200/50"
+              "w-fit bg-green-200 text-green-700 hover:bg-green-200/50",
             )}
           >
             Add Habit
           </Link>
         </div>
-      ) : (
-        <>
-          <HabitList habits={habits} />
-        </>
-      )}
-    </div>
-  );
-}
-
-export function ToastSimple() {
-  const { toast } = useToast();
+      </div>
+    );
+  }
 
   return (
-    <Button variant="outline" onClick={() => {}}>
-      Show Toast
-    </Button>
+    <div className="mx-auto w-full max-w-screen-sm">
+      <HabitList />
+    </div>
   );
 }

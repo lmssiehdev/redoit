@@ -3,16 +3,19 @@
 import { DayWithToolTip } from "@/components/calendar/Monthly";
 import VerticalCalendarWrapper from "@/components/calendar/Vertical";
 import CurrentStreak from "@/components/habits/CurrentStreak";
+import { buttonVariants } from "@/components/ui/button";
+import { useUser } from "@/context/AuthProvider";
 import { useDate } from "@/context/DateProvider";
-import { useCalculateStreak } from "@/hooks/useCalculateStreak";
 import { Habit } from "@/utils/habits";
-import { LightningBoltIcon } from "@radix-ui/react-icons";
+import { cn } from "@/utils/misc";
+import Link from "next/link";
+import ReactRough, { Rectangle } from "rough-react-wrapper";
 import { useImmerReducer } from "use-immer";
 
-function reducer(
-  state,
-  action: { type: "UPDATE_DATE"; habitId: string; date: string },
-) {
+type State = Record<string, Habit.Definition>;
+type Action = { type: "UPDATE_DATE"; habitId: string; date: string };
+
+function reducer(state: State, action: Action) {
   switch (action.type) {
     case "UPDATE_DATE": {
       const status = state[action.habitId].completedDates[action.date];
@@ -31,64 +34,27 @@ function reducer(
   return state;
 }
 
-export function LandingPageTrackerDemo() {
-  const [state, dispatch] = useImmerReducer(reducer, {
-    "habit/EI7Sz2bIdBZcDOVMw0CbA": {
-      archived: false,
-      color: "#9AC885",
-      completed: false,
-      frequency: [true, true, true, true, true, true, true],
-      name: "yikes.",
-      completedDates: {
-        "2023-12-10": "checked",
-        "2023-12-11": "checked",
-        "2023-12-12": "checked",
-        "2023-12-14": "checked",
-        "2023-12-15": "checked",
-        "2023-12-16": "checked",
-        "2023-12-17": "checked",
-        "2023-12-18": "skipped",
-        "2023-12-19": "skipped",
-        "2023-12-20": "checked",
-        "2023-12-21": "checked",
-        "2023-12-3": "checked",
-        "2023-12-4": "checked",
-        "2023-12-6": "skipped",
-        "2023-12-7": "skipped",
-        "2023-12-8": "checked",
-        "2023-12-9": "checked",
-      },
-    },
-    "habit/Ld2DArhty--QbiasCGNPg": {
-      archived: false,
-      color: "#9AC885",
-      completed: false,
-      frequency: [true, true, true, true, true, true, true],
-      name: "yikes.",
-      completedDates: {
-        "2023-12-10": "checked",
-        "2023-12-11": "checked",
-        "2023-12-12": "checked",
-        "2023-12-14": "checked",
-        "2023-12-15": "checked",
-        "2023-12-16": "checked",
-        "2023-12-17": "checked",
-        "2023-12-18": "skipped",
-        "2023-12-19": "skipped",
-        "2023-12-20": "checked",
-        "2023-12-21": "checked",
-        "2023-12-3": "checked",
-        "2023-12-4": "checked",
-        "2023-12-6": "skipped",
-        "2023-12-7": "skipped",
-        "2023-12-8": "checked",
-        "2023-12-9": "checked",
-      },
-    },
-  });
+export function LandingPageTrackerDemo({
+  initialState,
+}: {
+  initialState: Record<string, Habit.Definition>;
+}) {
+  const [state, dispatch] = useImmerReducer(reducer, initialState);
   const { calendarDates: dateArray } = useDate();
   return (
     <>
+      {/* <div className="roughjs-wrapper">
+        <ReactRough renderer={"svg"} width={40} height={40}>
+          <Rectangle
+            width={30}
+            height={30}
+            x={30}
+            y={30}
+            fill="purple"
+            fillStyle={"cross-hatch"}
+          />
+        </ReactRough>
+      </div> */}
       <div className="my-2 flex items-center justify-between gap-2 md:grid md:grid-cols-[minmax(0px,200px),6fr,40px] ">
         <VerticalCalendarWrapper />
       </div>
@@ -137,5 +103,34 @@ export function LandingPageTrackerDemo() {
         );
       })}
     </>
+  );
+}
+
+export function HomeCallToAction() {
+  const { session } = useUser();
+
+  if (!session?.user?.id)
+    return (
+      <Link
+        href="/auth/signin"
+        className={cn(
+          buttonVariants({ variant: "jounral" }),
+          "my-5 inline-block",
+        )}
+      >
+        Get Started
+      </Link>
+    );
+
+  return (
+    <Link
+      href="/web"
+      className={cn(
+        buttonVariants({ variant: "jounral" }),
+        "my-5 inline-block",
+      )}
+    >
+      Go To App
+    </Link>
   );
 }

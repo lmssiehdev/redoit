@@ -9,35 +9,34 @@ import { cn } from "@/utils/misc";
 import Link from "next/link";
 
 export function HabitList() {
-  const { habits } = useHabits();
+  const { habitsObject } = useHabits();
 
   return (
     <>
-      <div className="my-2 flex justify-between items-center md:grid md:grid-cols-[minmax(0px,200px),6fr,40px] gap-2 ">
+      <div className="my-2 flex items-center justify-between gap-2 md:grid md:grid-cols-[minmax(0px,200px),6fr,40px] ">
         <VerticalCalendarWrapper />
       </div>
 
-      {habits.map(([k, v]) => {
+      {Object.keys(habitsObject).map((habitId) => {
         return (
           <div
-            className="my-2 grid grid-rows-2 md:grid-rows-1 md:grid-cols-[minmax(0px,200px),6fr,40px] gap-2"
-            key={k}
+            className="my-2 grid grid-rows-2 gap-2 md:grid-cols-[minmax(0px,200px),6fr,40px] md:grid-rows-1"
+            key={habitId}
           >
-            <HabitProvider habitId={k}>
+            <HabitProvider habitId={habitId}>
               <HabitRow />
             </HabitProvider>
           </div>
         );
       })}
-      <div className="my-2 grid grid-rows-2 md:grid-rows-1 md:grid-cols-[minmax(0px,200px),6fr,40px] gap-2">
+      <div className="my-2 grid grid-rows-2 gap-2 md:grid-cols-[minmax(0px,200px),6fr,40px] md:grid-rows-1">
         <Link
           href="/create"
           className={cn(
             buttonVariants({
               variant: "jounral",
-              // size: "sm",
             }),
-            "text-green-900 bg-green-100 hover:bg-green-100/50"
+            "bg-green-100 text-green-900 hover:bg-green-100/50",
           )}
         >
           Add Habit

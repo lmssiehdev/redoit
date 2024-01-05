@@ -1,4 +1,4 @@
-import { CheckedIcon, SkippedIcon } from "@/components/LandingPageTrackerDemo";
+import { CheckedIcon, SkippedIcon } from "@/components/rough";
 import { cn } from "@/utils/misc";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
@@ -49,11 +49,8 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {status && (
           <div className="pointer-events-none -translate-x-[50%] -translate-y-[50%]">
-            {status === "skipped" ? (
-              <SkippedIcon style={{ color }} />
-            ) : (
-              <CheckedIcon style={{ color }} />
-            )}
+            {status === "skipped" && <SkippedIcon style={{ color }} />}
+            {status === "checked" && <CheckedIcon style={{ color }} />}
             {/* <ReactRough renderer={"svg"}>
               <Rectangle
                 seed={100}

@@ -1,3 +1,4 @@
+import { CheckedIcon, SkippedIcon } from "@/components/LandingPageTrackerDemo";
 import { cn } from "@/utils/misc";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
@@ -20,7 +21,7 @@ const DayVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -34,21 +35,26 @@ export interface ButtonProps
 export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, variant, size, asChild = false, status, color, ...props },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(
           "overflow-hidden",
-          DayVariants({ variant, size, className })
+          DayVariants({ variant, size, className }),
         )}
         ref={ref}
         {...props}
       >
         {status && (
-          <div className="-translate-x-[50%] -translate-y-[50%] pointer-events-none">
-            <ReactRough renderer={"svg"}>
+          <div className="pointer-events-none -translate-x-[50%] -translate-y-[50%]">
+            {status === "skipped" ? (
+              <SkippedIcon style={{ color }} />
+            ) : (
+              <CheckedIcon style={{ color }} />
+            )}
+            {/* <ReactRough renderer={"svg"}>
               <Rectangle
                 seed={100}
                 width={200}
@@ -63,11 +69,11 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
                 fillStyle={status === "checked" ? "hachure" : "dashed"}
                 bowing={20}
               />
-            </ReactRough>
+            </ReactRough> */}
           </div>
         )}
       </Comp>
     );
-  }
+  },
 );
 Day.displayName = "Day";

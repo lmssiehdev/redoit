@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
 import { HABIT_TEMPLATE, type Habit } from "@/utils/habits";
 import { cn } from "@/utils/misc";
-import { ChevronLeftIcon } from "@radix-ui/react-icons";
+import { CaretLeft } from "@phosphor-icons/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,10 +17,10 @@ export function AppBackButton() {
       href="/web"
       className={cn(
         buttonVariants({ variant: "ghost" }),
-        "flex items-center w-fit"
+        "flex w-fit items-center",
       )}
     >
-      <ChevronLeftIcon className="mr-2 h-4 w-4" />
+      <CaretLeft className="mr-2 h-4 w-4" />
       Back
     </Link>
   );
@@ -29,8 +29,8 @@ export default function Page() {
   return (
     <div>
       <AppBackButton />
-      <div className="space-y-2 max-w-[400px] mx-auto">
-        <h1 className="mt-2 mb-6 text-xl">Create Habit</h1>
+      <div className="mx-auto max-w-[400px] space-y-2">
+        <h1 className="mb-6 mt-2 text-xl">Create Habit</h1>
         <FormWrapper />
       </div>
     </div>

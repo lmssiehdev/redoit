@@ -2,14 +2,14 @@
 
 import { AppBackButton } from "@/app/(replicache)/create/page";
 import { MonthlyCalendar } from "@/components/calendar/Monthly";
-import ChartWrapper from "@/components/chart";
+import { Overview } from "@/components/habits/Overview";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { HabitProvider, useHabit } from "@/context/HabitProvider";
-import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
 import { cn } from "@/utils/misc";
 import streakRanges from "@/utils/streakRanges";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -39,13 +39,11 @@ function Content({ paramsId }: { paramsId: string }) {
     router.push("/web");
   }
 
-  // return ;
-
   return (
-    <div className="max-w-screen-sm w-full mx-auto">
-      <div className="max-w-fit w-full mx-auto">
-        <div className="max-w-[350px] w-full mx-auto">
-          <div className="flex justify-between items-center ">
+    <div className="mx-auto w-full max-w-screen-sm">
+      <div className="mx-auto w-full max-w-fit">
+        <div className="mx-auto w-full max-w-[350px]">
+          <div className="flex items-center justify-between ">
             <div
               className="border-l-2 pl-2"
               style={{
@@ -54,7 +52,7 @@ function Content({ paramsId }: { paramsId: string }) {
             >
               {habitData.name}
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <Link
                 className={buttonVariants({
                   variant: "ghost",
@@ -62,17 +60,21 @@ function Content({ paramsId }: { paramsId: string }) {
                 })}
                 href={`/edit/${habitId.replace("habit/", "")}`}
               >
-                <Pencil1Icon className="h-4 w-4" />
+                <PencilSimple className="h-4 w-4" />
               </Link>
               <Button variant="ghost" size="icon" onClick={handleDeleteHabit}>
-                <TrashIcon className="h-4 w-4" />
+                <TrashSimple className="h-4 w-4" />
               </Button>
             </div>
           </div>
           <div className="my-5">
             <MonthlyCalendar />
           </div>
-          <Streaks />
+          <div>
+            <h2 className="mb-5 text-center text-xl">Overview</h2>
+            <Overview color={habitData?.color} />
+          </div>
+          {/* <Streaks /> */}
         </div>
         {/* <div>
           <h2 className="text-center font-bold text-lg tracking-wide">
@@ -92,17 +94,17 @@ function Streaks() {
   } = useHabit();
   const ranges = useMemo(() => {
     function getTop5RangesPercentages(
-      ranges: ReturnType<typeof streakRanges>
+      ranges: ReturnType<typeof streakRanges>,
     ): number[] {
       const totalSum = ranges.reduce((sum, range) => sum + range.duration, 0);
       const percentages = ranges.map(
-        (range) => (range.duration / totalSum) * 100
+        (range) => (range.duration / totalSum) * 100,
       );
       return percentages;
     }
 
     const ranges = streakRanges(
-      Object.keys(completedDates) as unknown as Date[]
+      Object.keys(completedDates) as unknown as Date[],
     );
 
     const sortedRanges = ranges.sort((a, b) => b.duration - a.duration);
@@ -121,27 +123,27 @@ function Streaks() {
 
   return (
     <div>
-      <h2 className="text-xl text-center mb-5">Streaks</h2>
-      <div className="flex flex-col items-center justify-center gap-2 max-w-[400px] ">
+      <h2 className="mb-5 text-center text-xl">Streaks</h2>
+      <div className="flex max-w-[400px] flex-col items-center justify-center gap-2 ">
         {ranges.map((item, index) => (
-          <div key={index} className="flex-1 w-full flex justify-center gap-2 ">
-            <span className="whitespace-nowrap text-xs flex items-center">
+          <div key={index} className="flex w-full flex-1 justify-center gap-2 ">
+            <span className="flex items-center whitespace-nowrap text-xs">
               {dayjs(new Date(item.start)).format("MMM DD")}
             </span>
             <div
               className={cn(
-                "rounded-[10px_0/100px_20px] yellow text-center justify-center px-1 min-w-fit py-[0.1rem] transition-width duration-1000 ease-in-out"
+                "yellow transition-width min-w-fit justify-center rounded-[10px_0/100px_20px] px-1 py-[0.1rem] text-center duration-1000 ease-in-out",
               )}
               style={{
                 width: `${item.percentage}%`,
-                ...convertHexToRGBA(color),
+                // ...convertHexToRGBA(color),
               }}
             >
               <span className="mx-1 block">{item.duration}</span>
             </div>
-            <span className="whitespace-nowrap text-xs flex items-center">
+            <span className="flex items-center whitespace-nowrap text-xs">
               {dayjs(new Date(item.end ? item.end : item.start)).format(
-                "MMM DD"
+                "MMM DD",
               )}
             </span>
           </div>

@@ -10,7 +10,8 @@ import { useHabit } from "@/context/HabitProvider";
 import { useMonth } from "@/hooks/useMonthNavigation";
 import { days, months } from "@/utils/constants/date";
 import { Habit } from "@/utils/habits";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+
 import dayjs, { Dayjs } from "dayjs";
 
 export function MonthlyCalendar() {
@@ -60,7 +61,7 @@ function MonthlyNavigation({
         onClick={prevMonth}
         className="border-1 flex items-center"
       >
-        <ChevronLeftIcon />
+        <CaretLeft />
       </Button>
       <span>{months[month]}</span>
       <Button
@@ -70,7 +71,7 @@ function MonthlyNavigation({
         className="border-1 flex items-center"
         disabled={isCurrentMonth}
       >
-        <ChevronRightIcon />
+        <CaretRight />
       </Button>
     </div>
   );

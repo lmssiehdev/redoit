@@ -1,11 +1,11 @@
 import { useCalculateStreak } from "@/hooks/useCalculateStreak";
 import { Habit } from "@/utils/habits";
-import { LightningBoltIcon } from "@radix-ui/react-icons";
+import { Lightning } from "@phosphor-icons/react";
 import {
+  Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  Tooltip,
 } from "@radix-ui/react-tooltip";
 
 export default function CurrentStreak({
@@ -19,8 +19,8 @@ export default function CurrentStreak({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="hidden items-center gap-1.5  text-sm sm:flex">
-            <LightningBoltIcon />
+          <span className="hidden items-center gap-1 sm:flex">
+            <Lightning />
             {currentStreak}
           </span>
         </TooltipTrigger>

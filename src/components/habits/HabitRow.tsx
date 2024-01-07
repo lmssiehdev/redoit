@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Habit } from "@/utils/habits";
 
-import { Day } from "@/components/habits/Day";
+import { DayWithToolTip } from "@/components/calendar/Monthly";
+import CurrentStreak from "@/components/habits/CurrentStreak";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,14 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useHabit } from "@/context/HabitProvider";
-import { useCalculateStreak } from "@/hooks/useCalculateStreak";
-import { LightningBoltIcon, Pencil1Icon } from "@radix-ui/react-icons";
-import Link from "next/link";
 import { useDate } from "@/context/DateProvider";
+import { useHabit } from "@/context/HabitProvider";
+import { DotsThreeVertical } from "@phosphor-icons/react";
+import Link from "next/link";
 import { memo } from "react";
-import { DayWithToolTip } from "@/components/calendar/Monthly";
-import CurrentStreak from "@/components/habits/CurrentStreak";
 
 function HabitRow() {
   const {
@@ -89,7 +86,7 @@ export function DataTableRowActions({
           variant="ghost"
           className="group-hover:visible data-[state=open]:visible sm:invisible"
         >
-          <Pencil1Icon />
+          <DotsThreeVertical weight="bold" className="h-5 w-5" />
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>

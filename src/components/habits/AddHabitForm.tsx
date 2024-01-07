@@ -22,14 +22,20 @@ import { days } from "@/utils/constants/date";
 import { useMemo } from "react";
 
 const colors = [
+  // "#81968d",
+  // "#a2b099",
+  // "#debd8f",
   "#81968d",
-  "#a2b099",
-  "#debd8f",
-  "#ffda93",
+  "#7859a6",
+  "#a6595b",
+  "#59a68f",
+  "#a67859",
+  "#a65971",
+  "#a6596a",
+  "#71a659",
   "#f9ac78",
-  "#bc8294",
-  "#e55a79",
-  "#9AC885",
+  // "#bc8294",
+  // "#9AC885",
 ] as const;
 
 const getFrequencyArray = (array: string[]) =>
@@ -118,17 +124,14 @@ export function ProfileForm({
                       key={color}
                       className="flex items-center justify-center"
                     >
-                      <FormControl className="">
-                        <>
-                          <RadioGroupItem
-                            value={color}
-                            className={cn("rounded-full h-8 w-8 ", {})}
-                            style={{
-                              backgroundColor: color,
-                            }}
-                          />
-                          <FormLabel></FormLabel>
-                        </>
+                      <FormControl>
+                        <RadioGroupItem
+                          value={color}
+                          className="h-8 w-8 rounded-full"
+                          style={{
+                            backgroundColor: color,
+                          }}
+                        />
                       </FormControl>
                     </FormItem>
                   ))}
@@ -156,7 +159,7 @@ export function ProfileForm({
                       key={day}
                       value={index.toString()}
                       aria-label={`Toggle ${day}`}
-                      className="flex-1 h-6 w-6 bg-purple-50 hover:bg-purple-30 text-center p-1 data-[state=on]:bg-purple-100  data-[state=on]:text-purple-400 border-x border-y-0 border-solid border-x-purple-200 text-purple-300 first:border-0 last:border-0 rounded-none"
+                      className="hover:bg-purple-30 h-6 w-6 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400"
                     >
                       {day.substring(0, 3)}
                       {/* {JSON.stringify(index.toString())} */}
@@ -173,9 +176,9 @@ export function ProfileForm({
           variant="jounral"
           className={cn(
             {
-              "text-green-700 bg-green-200 hover:bg-green-200/50": true,
+              "bg-green-200 text-green-700 hover:bg-green-200/50": true,
             },
-            "w-fit"
+            "w-fit",
           )}
         >
           {isEditing ? "Update" : "Add"}

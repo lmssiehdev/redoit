@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,24 +11,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context/AuthProvider";
+import { cn } from "@/utils/misc";
+import { UserCircle } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export function UserNav() {
-  const { session, signIn, signOut, isPremium } = useUser();
+  const { session, signIn, signOut } = useUser();
 
   return (
     <div className="font-normal">
       <div className="mx-auto flex justify-between  py-7">
         <Link href="/" className="font-walsheim text-xl">
           Redoit
-          {isPremium && (
+          {false && (
             <span className="ml-2 h-fit rounded bg-yellow-500 px-1 text-xs">
               Pro
             </span>
           )}
         </Link>
         {session === null ? (
-          <button onClick={() => signIn()}>Sign In</button>
+          <Link
+            href="/auth/login"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "flex w-fit items-center",
+            )}
+          >
+            <UserCircle className="mr-2 h-4 w-4" />
+            Login
+          </Link>
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

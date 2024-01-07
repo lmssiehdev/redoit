@@ -24,7 +24,7 @@ export default function HabitLayout({
         </ReplicacheProvider>
       ) : (
         <Link
-          href="/auth/signin"
+          href="/auth/login"
           className={cn(buttonVariants({ variant: "link" }), "text-lg")}
         >
           Login

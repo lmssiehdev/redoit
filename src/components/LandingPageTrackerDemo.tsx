@@ -112,7 +112,7 @@ export function HomeCallToAction() {
   if (!session?.user?.id)
     return (
       <Link
-        href="/auth/signin"
+        href="/auth/login"
         className={cn(
           buttonVariants({ variant: "jounral" }),
           "my-5 inline-block",

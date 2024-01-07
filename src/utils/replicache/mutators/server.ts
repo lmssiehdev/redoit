@@ -142,21 +142,16 @@ export async function updateHabit({
   spaceId: string;
 }) {
   // * naming is hard, I know.
-  const { args: habit } = args;
-  const filteredValues = Object.keys(habit).map((key) => [
-    key,
-    habit[key as keyof typeof habit],
-  ]);
-  console.log({
-    filteredValues,
-  });
+  const { args: habitData } = args;
+  const { id, ...habitDataWithoutId } = habitData;
+
   await tx.habit.update({
     where: {
       id: args.id.replace("habit/", ""),
       spaceId,
     },
     data: {
-      ...Object.fromEntries(filteredValues),
+      ...habitDataWithoutId,
       version: nextVersion,
     },
   });

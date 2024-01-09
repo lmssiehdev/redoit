@@ -12,6 +12,7 @@ type ContextValue = {
   habitId: string;
   markDate: (date: string) => void;
   deleteHabit: () => void;
+  archiveHabit: () => void;
 };
 const HabitContext = createContext<ContextValue>({} as ContextValue);
 
@@ -118,6 +119,17 @@ export function HabitProvider({
             },
           });
           return;
+        },
+        archiveHabit: () => {
+          if (!habitData) return;
+          const updatedHabit = {
+            ...habitData,
+            archived: !habitData?.archived,
+          };
+          rep?.mutate.updateHabit({
+            id: habitId,
+            args: updatedHabit,
+          });
         },
       }) as ContextValue,
     [datesObject, habitData, habitId, rep],

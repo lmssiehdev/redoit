@@ -22,8 +22,9 @@ function HabitRow() {
     deleteHabit,
     markDate,
     completedDates,
-    habitData: v,
+    habitData,
     habitId,
+    archiveHabit,
   } = useHabit();
 
   const { calendarDates: dateArray } = useDate();
@@ -36,14 +37,16 @@ function HabitRow() {
           href={`habit/${habitId.replace("habit/", "")}`}
           className="flex items-center gap-2 border-l-2 pl-2"
           style={{
-            borderColor: v?.color,
+            borderColor: habitData?.color,
           }}
         >
-          {/* <span className="h-3 w-3 rounded-full" style={{}}></span> */}
-          <span>{v?.name} </span>
+          <span>
+            {habitData?.name} {habitData?.archived ? "archive" : "unarchive"}
+          </span>
         </Link>
         <div>
           <DataTableRowActions
+            archiveHabit={archiveHabit}
             habitId={habitId.replace("habit/", "")}
             deleteFn={() => deleteHabit()}
           />
@@ -56,7 +59,7 @@ function HabitRow() {
               date={date}
               key={date}
               markDate={markDate}
-              habitData={v}
+              habitData={habitData}
               completedDates={completedDates}
             />
           );
@@ -73,9 +76,11 @@ export { memoHabitRow as HabitRow };
 
 export function DataTableRowActions({
   habitId,
+  archiveHabit,
   deleteFn,
 }: {
   habitId: string;
+  archiveHabit: () => void;
   deleteFn: () => void;
 }) {
   return (
@@ -92,16 +97,16 @@ export function DataTableRowActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem asChild>
-          <Link href={`edit/${habitId}`} className="font-normal">
+          <Link href={`edit/${habitId}`} className="">
             Edit
           </Link>
         </DropdownMenuItem>
-        {/* <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={deleteFn} className="font-normal">
+        <DropdownMenuItem onClick={archiveHabit}>
+          Archive
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={deleteFn}>
           Delete
-          {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

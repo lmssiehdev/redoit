@@ -1,11 +1,9 @@
 "use client";
-import { buttonVariants } from "@/components/ui/button";
 import { useUser } from "@/context/AuthProvider";
 import { DateProvider } from "@/context/DateProvider";
 import { HabitsProvider } from "@/context/HabitsProvider";
 import { ReplicacheProvider } from "@/context/ReplicacheProvider";
-import { cn } from "@/utils/misc";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function HabitLayout({
   children,
@@ -14,22 +12,13 @@ export default function HabitLayout({
 }) {
   const { session } = useUser();
 
+  if (session?.user?.id == null) redirect("/auth/login");
+
   return (
-    <>
-      {session?.user?.id != null ? (
-        <ReplicacheProvider>
-          <HabitsProvider>
-            <DateProvider>{children}</DateProvider>
-          </HabitsProvider>
-        </ReplicacheProvider>
-      ) : (
-        <Link
-          href="/auth/login"
-          className={cn(buttonVariants({ variant: "link" }), "text-lg")}
-        >
-          Login
-        </Link>
-      )}
-    </>
+    <ReplicacheProvider>
+      <HabitsProvider>
+        <DateProvider>{children}</DateProvider>
+      </HabitsProvider>
+    </ReplicacheProvider>
   );
 }

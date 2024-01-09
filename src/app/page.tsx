@@ -2,7 +2,6 @@ import {
   HomeCallToAction,
   LandingPageTrackerDemo,
 } from "@/components/LandingPageTrackerDemo";
-import { Button } from "@/components/ui/button";
 
 import { DateProvider } from "@/context/DateProvider";
 import { HABIT_TEMPLATE, Habit } from "@/utils/habits";

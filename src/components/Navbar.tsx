@@ -19,7 +19,7 @@ export function UserNav() {
   const { session, signIn, signOut } = useUser();
 
   return (
-    <div className="font-normal">
+    <div className="">
       <div className="mx-auto flex justify-between  py-7">
         <Link href="/" className="font-walsheim text-xl">
           Redoit
@@ -51,7 +51,7 @@ export function UserNav() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
+              <DropdownMenuLabel className="">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">
                     {/* * Temp: get this from users table. */}
@@ -69,10 +69,7 @@ export function UserNav() {
             <DropdownMenuShortcut>⇧P</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup> */}
-              <DropdownMenuItem
-                className="font-normal"
-                onClick={() => signOut()}
-              >
+              <DropdownMenuItem className="" onClick={() => signOut()}>
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>

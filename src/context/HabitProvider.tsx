@@ -1,12 +1,15 @@
 "use client";
 
 import { useToast } from "@/components/ui/use-toast";
+import { useHabits } from "@/context/HabitsProvider";
 import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
 import { Habit } from "@/utils/habits";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useSubscribe } from "replicache-react";
 
 type ContextValue = {
+  habit: Habit.Definition;
+  isSearching: boolean;
   completedDates: Record<string, "checked" | "skipped">;
   habitData: Habit.Definition;
   habitId: string;
@@ -14,7 +17,7 @@ type ContextValue = {
   deleteHabit: () => void;
   archiveHabit: () => void;
 };
-const HabitContext = createContext<ContextValue>({} as ContextValue);
+const HabitContext = createContext<ContextValue | null>(null);
 
 export function useHabit() {
   const context = useContext(HabitContext);
@@ -30,21 +33,23 @@ export function HabitProvider({
   children: React.ReactNode;
 }) {
   const { rep } = useReplicacheFromContext();
+  const { habitsObject: _habits } = useHabits();
   const { toast } = useToast();
 
-  const habits = useSubscribe(
-    rep,
-    async (tx) => {
-      console.log("searching for", habitId);
-      const list = (await tx
-        .scan({ prefix: `${habitId}` })
-        .entries()
-        .toArray()) as []; // [string, { id: string; name: string }][];
-      // list.sort(([, { order: a }], [, { order: b }]) => a - b);
-      return list;
-    },
-    [],
-  );
+  // const habits = useSubscribe(
+  //   rep,
+  //   async (tx) => {
+  //     console.log("searching for", habitId);
+  //     const list = (await tx
+  //       .scan({ prefix: `${habitId}` })
+  //       .entries()
+  //       .toArray()) as []; // [string, { id: string; name: string }][];
+  //     // list.sort(([, { order: a }], [, { order: b }]) => a - b);
+  //     setIsSearching(false);
+  //     return list;
+  //   },
+  //   [],
+  // );
   const completedDates = useSubscribe(
     rep,
     async (tx) => {
@@ -58,14 +63,14 @@ export function HabitProvider({
     [],
   );
 
-  const habitData = useMemo(() => {
-    const [result] = habits as unknown as [[string, Habit.Definition]];
-    if (result == undefined || result.length != 2) return;
-    return {
-      ...result[1],
-      id: result[0],
-    };
-  }, [habits]);
+  // const habitData = useMemo(() => {
+  //   const [result] = habits as unknown as [[string, Habit.Definition]];
+  //   if (result == undefined || result.length != 2) return;
+  //   return {
+  //     ...result[1],
+  //     id: result[0],
+  //   };
+  // }, [habits]);
 
   const datesObject = useMemo(
     () =>
@@ -92,8 +97,8 @@ export function HabitProvider({
   const value = useMemo(
     () =>
       ({
+        habitData: _habits[habitId],
         completedDates: datesObject,
-        habitData,
         habitId,
         deleteHabit,
         markDate: (date: string) => {
@@ -121,6 +126,7 @@ export function HabitProvider({
           return;
         },
         archiveHabit: () => {
+          const habitData = _habits[habitId];
           if (!habitData) return;
           const updatedHabit = {
             ...habitData,
@@ -132,7 +138,7 @@ export function HabitProvider({
           });
         },
       }) as ContextValue,
-    [datesObject, habitData, habitId, rep],
+    [datesObject, habitId, rep],
   );
 
   return (

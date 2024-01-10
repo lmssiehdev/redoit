@@ -4,6 +4,7 @@ import { AppBackButton } from "@/app/(replicache)/create/page";
 import { ProfileForm } from "@/components/habits/AddHabitForm";
 import { useToast } from "@/components/ui/use-toast";
 import { HabitProvider, useHabit } from "@/context/HabitProvider";
+import { useHabits } from "@/context/HabitsProvider";
 import { useReplicacheFromContext } from "@/context/ReplicacheProvider";
 import { Habit } from "@/utils/habits";
 import { useRouter } from "next/navigation";
@@ -22,8 +23,13 @@ export default function HabitPage({ params }: { params: { id: string } }) {
 function Content({ paramsId }: { paramsId: string }) {
   const { rep } = useReplicacheFromContext();
   const { toast } = useToast();
-  const { completedDates, habitData, habitId } = useHabit();
+  const { isSearching } = useHabits();
+  const { habitData, habitId } = useHabit();
   const router = useRouter();
+
+  if (isSearching) {
+    return <>Loading...</>;
+  }
 
   if (!habitData || habitData.id != paramsId)
     return <div>Habits doesn't exist : /</div>;

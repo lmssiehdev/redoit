@@ -6,6 +6,7 @@ import { Overview } from "@/components/habits/Overview";
 import { Streaks } from "@/components/habits/Streaks";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { HabitProvider, useHabit } from "@/context/HabitProvider";
+import { useHabits } from "@/context/HabitsProvider";
 import { PencilSimple, TrashSimple } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,8 +28,13 @@ export default function HabitPage({ params }: { params: { id: string } }) {
 
 function Content({ paramsId }: { paramsId: string }) {
   const router = useRouter();
-  const { completedDates, habitData, habitId, markDate, deleteHabit } =
-    useHabit();
+  const { isSearching } = useHabits();
+  const { habitId, deleteHabit, habitData } = useHabit();
+
+  if (isSearching) {
+    return <>Loading...</>;
+  }
+
   if (!habitData || habitData.id != paramsId)
     return <div>Habits doesn't exist : /</div>;
 

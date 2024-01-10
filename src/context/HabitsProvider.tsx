@@ -44,7 +44,7 @@ export function HabitsProvider({ children }: { children: React.ReactNode }) {
         const [key, value] = curr;
 
         // @ts-ignore
-        prev[key] = value;
+        prev[key] = { ...value, id: key };
 
         return prev;
       }, {}),

@@ -25,7 +25,7 @@ export function getErrorMessage(error: unknown): string {
 export const generateId = (n = 6) => {
   const nanoid = customAlphabet(
     "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
-    n
+    n,
   );
 
   return nanoid();
@@ -54,5 +54,5 @@ export function convertHexToRGBA(hexCode = "", opacity = 1) {
     linear-gradient(to right, rgba(${rgbString}, 0.3) 0%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.6) 85%, rgba(${rgbString}, 0.8) 100%)
     `,
   };
-  return highlight;
+  return `rgba(${rgbString}, ${opacity ?? 0.2})`;
 }

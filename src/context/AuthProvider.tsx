@@ -88,7 +88,7 @@ export function AuthProvider({
       ({
         session,
         signIn: async () => {
-          if (process.env.NODE_ENV === "development") {
+          if (false && process.env.NODE_ENV === "development") {
             await supabase.auth.signInWithPassword({
               email: "test@example.com",
               password: "testtest",
@@ -96,13 +96,13 @@ export function AuthProvider({
           } else {
             await supabase.auth.signInWithOAuth({
               provider: "google",
-              options: {
-                queryParams: {
-                  access_type: "offline",
-                  prompt: "consent",
-                },
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL!}/auth/callback`,
-              },
+              // options: {
+              //   queryParams: {
+              //     access_type: "offline",
+              //     prompt: "consent",
+              //   },
+              //   redirectTo: `${process.env.NEXT_PUBLIC_APP_URL!}/auth/callback`,
+              // },
             });
           }
         },

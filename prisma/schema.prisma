@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,7 +14,6 @@ generator js {
 
 model User {
   id              String            @id @db.Uuid
-  // username String
   email           String            @default("example@gmail.com")
   name            String            @default("")
   avatar_url      String            @default("")
@@ -42,6 +38,8 @@ model ReplicacheSpace {
 model ReplicacheClientGroup {
   id      String             @id @default(uuid())
   clients ReplicacheClient[]
+
+  @@map("replicache_client_group")
 }
 
 model ReplicacheClient {
@@ -50,6 +48,8 @@ model ReplicacheClient {
   replicacheClientGroupId String
   lastMutationId          Int                   @default(0)
   lastModifiedVersion     Int                   @default(0)
+
+  @@map("replicache_client")
 }
 
 model Habit {
@@ -71,6 +71,8 @@ model Habit {
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt() @map("updated_at")
   CompletedDate CompletedDate[]
+
+  @@map("habit")
 }
 
 model CompletedDate {
@@ -106,6 +108,8 @@ model Plan {
   interval      String
   intervalCount Int            @default(1)
   subscriptions Subscription[]
+
+  @@map("plant")
 }
 
 model WebhookEvent {
@@ -115,6 +119,8 @@ model WebhookEvent {
   processed       Boolean  @default(false)
   body            Json
   processingError String?
+
+  @@map("webhook_event")
 }
 
 model Subscription {
@@ -139,4 +145,5 @@ model Subscription {
   orderItemId        Int?      @unique
 
   @@index([planId, lemonSqueezyId])
+  @@map("subscription")
 }

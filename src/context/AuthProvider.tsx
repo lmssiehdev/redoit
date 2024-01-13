@@ -88,11 +88,12 @@ export function AuthProvider({
       ({
         session,
         signIn: async () => {
-          if (false && process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === "development") {
             await supabase.auth.signInWithPassword({
-              email: "test@example.com",
+              email: "test@something.com",
               password: "testtest",
             });
+            router.push("/");
           } else {
             await supabase.auth.signInWithOAuth({
               provider: "google",

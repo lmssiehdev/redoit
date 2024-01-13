@@ -39,7 +39,9 @@ function HabitRow() {
           style={{
             borderColor: habitData?.color,
           }}
-        ></Link>
+        >
+          <span>{habitData?.name}</span>
+        </Link>
         <div>
           <DataTableRowActions
             archiveHabit={archiveHabit}

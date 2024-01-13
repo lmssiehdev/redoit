@@ -39,11 +39,7 @@ function HabitRow() {
           style={{
             borderColor: habitData?.color,
           }}
-        >
-          <span>
-            {habitData?.name} {habitData?.archived ? "archive" : "unarchive"}
-          </span>
-        </Link>
+        ></Link>
         <div>
           <DataTableRowActions
             archiveHabit={archiveHabit}
@@ -102,12 +98,8 @@ export function DataTableRowActions({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={archiveHabit}>
-          Archive
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={deleteFn}>
-          Delete
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={archiveHabit}>Archive</DropdownMenuItem>
+        <DropdownMenuItem onClick={deleteFn}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

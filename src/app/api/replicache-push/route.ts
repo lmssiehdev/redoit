@@ -57,7 +57,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 403,
-      }
+      },
     );
   }
 
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
            */
           if (mutation.id < nextMutationId) {
             console.log(
-              `Mutation ${mutation.id} has already been processed - skipping`
+              `Mutation ${mutation.id} has already been processed - skipping`,
             );
             // ! TEMP
             continue;
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           */
           if (mutation.id > nextMutationId) {
             throw new Error(
-              `Mutation ${mutation.id} is from the future - aborting. This can happen in development if the server restarts. In that case, clear appliation data in browser and refresh.`
+              `Mutation ${mutation.id} is from the future - aborting. This can happen in development if the server restarts. In that case, clear appliation data in browser and refresh.`,
             );
           }
 
@@ -182,9 +182,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // Required for Replicache to work
-        maxWait: 5000, // default: 2000
-        timeout: 10000, // default: 5000
-      }
+        // maxWait: 5000, // default: 2000
+        // timeout: 10000, // default: 5000
+      },
     );
     await Poke();
 

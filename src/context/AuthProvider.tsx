@@ -88,7 +88,7 @@ export function AuthProvider({
       ({
         session,
         signIn: async () => {
-          if (process.env.NODE_ENV === "development") {
+          if (true || process.env.NODE_ENV === "development") {
             await supabase.auth.signInWithPassword({
               email: "test@something.com",
               password: "testtest",

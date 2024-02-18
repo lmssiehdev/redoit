@@ -44,7 +44,7 @@ function Content({ paramsId }: { paramsId: string }) {
   }
 
   return (
-    <div className="mx-auto flex w-full flex-col gap-12 sm:flex-row">
+    <div className="mx-auto mb-10 flex w-full flex-col gap-12 sm:flex-row">
       <div className="flex-1">
         <div className="flex items-center justify-between ">
           <div

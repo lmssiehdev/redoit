@@ -17,8 +17,8 @@ export default function Home() {
   if (habits.length === 0) {
     return (
       <div className="mx-auto w-full max-w-screen-sm">
-        <div className="flex flex-col gap-3">
-          <div>Get started</div>
+        <div className="flex flex-col items-center gap-3">
+          <h2 className="text-lg ">You don't have any habits yet!</h2>
           <Link
             href="/create"
             className={cn(

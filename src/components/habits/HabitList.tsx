@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { HabitProvider } from "@/context/HabitProvider";
 import { useHabits } from "@/context/HabitsProvider";
 import { cn } from "@/utils/misc";
+import { Plus } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export function HabitList() {
@@ -29,7 +30,31 @@ export function HabitList() {
           </div>
         );
       })}
-      <div className="my-2 grid grid-rows-2 gap-2 md:grid-cols-[minmax(0px,200px),6fr,40px] md:grid-rows-1">
+      <AddHabitButton />
+    </>
+  );
+}
+
+function AddHabitButton() {
+  return (
+    <>
+      {/* Mobile */}
+      <div className="absolute bottom-10 right-10">
+        <Link
+          href="/create"
+          className={cn(
+            buttonVariants({
+              variant: "jounral",
+            }),
+            "inline-block h-20 w-20 rounded-full",
+            "bg-green-100 text-green-900 hover:bg-green-100/50",
+          )}
+        >
+          <Plus className="h-full w-full p-2" weight="bold" />
+        </Link>
+      </div>
+      {/* Desktop */}
+      <div className="my-2 grid hidden grid-rows-2 gap-2 md:grid-cols-[minmax(0px,200px),6fr,40px] md:grid-rows-1">
         <Link
           href="/create"
           className={cn(

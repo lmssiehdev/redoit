@@ -131,8 +131,8 @@ export async function POST(req: NextRequest) {
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // Required for Replicache to work
-        maxWait: 5000, // default: 2000
-        timeout: 10000, // default: 5000
+        maxWait: 10000, // default: 2000
+        timeout: 20000, // default: 5000
       },
     );
 

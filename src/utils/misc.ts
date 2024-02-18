@@ -49,10 +49,6 @@ export function convertHexToRGBA(hexCode = "", opacity = 1) {
   // `rgba(${r},${g},${b},${opacity})`
   const rgbString = `${r},${g},${b}`;
 
-  const highlight = {
-    background: `
-    linear-gradient(to right, rgba(${rgbString}, 0.3) 0%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.6) 85%, rgba(${rgbString}, 0.8) 100%)
-    `,
-  };
-  return `rgba(${rgbString}, ${opacity ?? 0.2})`;
+  const highlight = `linear-gradient(to right, rgba(${rgbString}, 0.3) 0%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.4) 60%, rgba(${rgbString}, 0.6) 85%, rgba(${rgbString}, 0.8) 100%)`;
+  return highlight;
 }

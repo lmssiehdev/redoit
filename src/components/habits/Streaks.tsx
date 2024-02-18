@@ -39,7 +39,7 @@ export function Streaks() {
   }, [completedDates]);
 
   return (
-    <div className="flex max-w-[400px] flex-col items-center justify-center gap-2 ">
+    <div className="mx-auto flex max-w-[400px] flex-col items-center justify-center gap-2 ">
       {ranges.map((item, index) => (
         <div key={index} className="flex w-full flex-1 justify-center gap-2 ">
           <span className="flex items-center whitespace-nowrap text-xs">
@@ -51,7 +51,7 @@ export function Streaks() {
             )}
             style={{
               width: `${item.percentage}%`,
-              backgroundColor: convertHexToRGBA(color, 0.5),
+              background: convertHexToRGBA(color, 0.5),
             }}
           >
             <span className="mx-1 block">{item.duration}</span>

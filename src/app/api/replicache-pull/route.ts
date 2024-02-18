@@ -33,7 +33,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const userId = session.user.id;
   const spaceId = userId;
-
+  console.log({
+    spaceId,
+    userId,
+  });
   try {
     const data = await db.$transaction(
       async (tx) => {

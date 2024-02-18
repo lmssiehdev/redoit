@@ -15,7 +15,13 @@ export async function getSpaceVersion({
     },
   });
 
-  if (!space) throw new Error("Space Doesn't Exist");
+  if (!space)
+    console.log({
+      userId,
+      spaceId,
+      error: "BIG",
+    });
+  if (!space) throw new Error("Space Doesn't Exist " + userId + spaceId);
 
   return {
     data: space.version,

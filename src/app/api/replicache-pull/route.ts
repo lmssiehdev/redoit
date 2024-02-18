@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { PatchOperation, PullResponse } from "replicache";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { clientGroundID: clientGroundId } = body;
   const fromVersion = body.cookie ?? 0;
@@ -106,13 +106,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           }
         }
         for (let date of dates) {
-          const {
-            id,
-            deleted,
-            version: rowVersion,
-            status,
-            date: completedDate,
-          } = date;
+          const { id, deleted, version: rowVersion, status } = date;
           if (deleted) {
             if (rowVersion > fromVersion) {
               patch.push({
@@ -137,8 +131,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // Required for Replicache to work
-        // maxWait: 5000, // default: 2000
-        // timeout: 10000, // default: 5000
+        maxWait: 5000, // default: 2000
+        timeout: 10000, // default: 5000
       },
     );
 

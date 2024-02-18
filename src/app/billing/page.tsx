@@ -18,6 +18,7 @@ export async function getPlans() {
 export async function getSubscription(userId: string) {
   // Gets the most recent subscription
   console.log(userId);
+  return;
   return await db.subscription.findFirst({
     where: {
       userId: userId,
@@ -58,7 +59,7 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto max-w-lg">
-      <h1 className="text-xl font-bold mb-3">Billing</h1>
+      <h1 className="mb-3 text-xl font-bold">Billing</h1>
 
       <Plans plans={plans} subscription={subscription} />
 

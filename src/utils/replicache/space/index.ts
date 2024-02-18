@@ -1,4 +1,4 @@
-import { PrismaTx } from "@/utils/api/replicache/types";
+import { PrismaTx } from "@types";
 
 export async function getSpaceVersion({
   tx,

@@ -1,4 +1,4 @@
-import { PrismaTx } from "@/utils/api/replicache/types";
+import { PrismaTx } from "@types";
 import { Habit } from "@/utils/habits";
 
 export async function deleteHabit({

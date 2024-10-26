@@ -13,7 +13,7 @@ type Actions = {
 export const useSettingsStore = create<State & Actions>()(
 	immer(
 		persist(
-			(set, get) => ({
+			(set) => ({
 				confettiEnabled: true,
 				toggleConfetti: (value) =>
 					set((state) => {

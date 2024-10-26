@@ -1,7 +1,7 @@
 import { TinyColor } from "@ctrl/tinycolor";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "clsx";
 import { customAlphabet } from "nanoid";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

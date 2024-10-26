@@ -79,6 +79,7 @@ export function summary(
 				: 0;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { isInFuture, isToday, isTomorrow, ...rest } = result;
 	return rest;
 }

@@ -1,4 +1,4 @@
-import { HabitProvider } from "@/app/habit/[id]/page";
+import { HabitProvider } from "@/app/habit/[id]/_provider";
 import { DayWithToolTip } from "@/components/calendar/day";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {

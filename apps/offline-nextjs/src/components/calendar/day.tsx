@@ -1,4 +1,4 @@
-import { useHabit } from "@/app/habit/[id]/page";
+import { useHabit } from "@/app/habit/[id]/_provider";
 import { normalizeColor } from "@/components/calendar/monthly/overview";
 import {
 	Tooltip,

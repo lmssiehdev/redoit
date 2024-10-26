@@ -1,4 +1,4 @@
-import { useHabit } from "@/app/habit/[id]/page";
+import { useHabit } from "@/app/habit/[id]/_provider";
 import { LightenDarkenColor, cn, convertHex, lightOrDark } from "@/lib/utils";
 // TODO: rewrite this one.
 import { streakRanges } from "date-streaks";

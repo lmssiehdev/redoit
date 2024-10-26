@@ -1,6 +1,6 @@
 "use client";
 
-import { useHabit } from "@/app/habit/[id]/page";
+import { useHabit } from "@/app/habit/[id]/_provider";
 import {
 	ChartContainer,
 	ChartTooltip,

@@ -1,50 +1,19 @@
 "use client";
 
+import { HabitProvider, useHabit } from "@/app/habit/[id]/_provider";
 import { HabitStats, MonthlyView } from "@/components/calendar/monthly/view";
 import { GoToMainPageButton } from "@/components/calendar/weekly/misc";
 import { HabitColor } from "@/components/calendar/weekly/view";
 import { buttonVariants } from "@/components/ui/button";
-import { useHabitsStore } from "@/state";
-import type { HabitData } from "@/types";
 import { Archive, PencilSimple } from "@phosphor-icons/react";
 import Link from "next/link";
-import { createContext, useContext } from "react";
+import { use } from "react";
 
-type ContextValue = {
-	habitData: HabitData;
-};
+type Params = Promise<{ id: string }>;
 
-const HabitContext = createContext({} as ContextValue);
-
-export function HabitProvider({
-	children,
-	habitId,
-}: {
-	children: React.ReactNode;
-	habitId: string;
-}) {
-	const data = useHabitsStore((state) => state.data);
-	const habitData = data[habitId];
-
-	if (!habitData) return <div>{"Habit Doesn't Exist!"}</div>;
-
-	return (
-		<HabitContext.Provider value={{ habitData }}>
-			{children}
-		</HabitContext.Provider>
-	);
-}
-
-export function useHabit() {
-	const context = useContext(HabitContext);
-	if (context === undefined) {
-		throw new Error("useHabit must be used within a HabitProvider");
-	}
-	return context;
-}
-
-export default function HabitView({ params }: { params: { id: string } }) {
-	const habitId = params.id;
+export default function HabitView(props: { params: Params } ) {
+	const params = use(props.params);
+	const {id: habitId} = params;
 	if (typeof window === "undefined") {
 		return (
 			<div suppressHydrationWarning>

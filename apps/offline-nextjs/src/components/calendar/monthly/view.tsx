@@ -1,4 +1,4 @@
-import { useHabit } from "@/app/habit/[id]/page";
+import { useHabit } from "@/app/habit/[id]/_provider";
 import { DayWithToolTip } from "@/components/calendar/day";
 import { WeekChart } from "@/components/calendar/monthly/charts";
 import { useMonthContext } from "@/components/calendar/monthly/date-provider";

@@ -29,7 +29,7 @@ export default function Settings() {
             </CardHeader>
             <CardContent>
               <form className="flex flex-col gap-4">
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <label
                     htmlFor="countSkippedDays"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mr-auto"
@@ -37,7 +37,7 @@ export default function Settings() {
                     Count Skipped Days in Streak
                   </label>
                   <Switch id="countSkippedDays" defaultChecked />
-                </div>
+                </div> */}
                 <div className="flex items-center space-x-2">
                   <label
                     htmlFor="showConfetti"

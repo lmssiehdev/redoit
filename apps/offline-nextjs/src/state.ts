@@ -48,9 +48,9 @@ export const useHabitsStore = create<State & Actions>()(
 						createdAt: normalizeDate(new Date()),
 						isArchived: false,
 						dates: {},
-						// @ts-expect-error
+						// @ts-expect-error typescript being annoying
 						color: DEFAULT_HABIT_COLOR,
-						// @ts-expect-error
+						// @ts-expect-error typescript being annoying
 						name: "DEFAULT_NAME",
 						frequency: Array.from({ length: 7 }, () => true),
 						...payload,

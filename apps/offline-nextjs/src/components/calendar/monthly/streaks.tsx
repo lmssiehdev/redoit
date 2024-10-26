@@ -1,7 +1,6 @@
 import { useHabit } from "@/app/habit/[id]/_provider";
+import { streakRanges } from "@/lib/date-streaks/streakRanges";
 import { LightenDarkenColor, cn, convertHex, lightOrDark } from "@/lib/utils";
-// TODO: rewrite this one.
-import { streakRanges } from "date-streaks";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 
@@ -21,8 +20,9 @@ export function Streaks() {
 	const {
 		habitData: { dates, color },
 	} = useHabit();
+	// TODO: needs to ignore inactive days
 	const ranges = useMemo(() => {
-		const streakRangesData = streakRanges({ dates: Object.keys(dates) });
+		const streakRangesData = streakRanges(Object.keys(dates));
 		const top5Ranges = getTop5Ranges(streakRangesData);
 		const top5RangesPercentages = getTop5RangesPercentages(top5Ranges);
 

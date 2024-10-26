@@ -43,7 +43,7 @@ export default function Settings() {
 										htmlFor="showConfetti"
 										className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mr-auto"
 									>
-										Show confetti
+										Show confetti 🎉
 									</label>
 									<Switch
 										id="showConfetti"

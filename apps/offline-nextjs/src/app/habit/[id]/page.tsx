@@ -11,9 +11,9 @@ import { use } from "react";
 
 type Params = Promise<{ id: string }>;
 
-export default function HabitView(props: { params: Params } ) {
+export default function HabitView(props: { params: Params }) {
 	const params = use(props.params);
-	const {id: habitId} = params;
+	const { id: habitId } = params;
 	if (typeof window === "undefined") {
 		return (
 			<div suppressHydrationWarning>

@@ -4,7 +4,6 @@ import { WeekChart } from "@/components/calendar/monthly/charts";
 import { useMonthContext } from "@/components/calendar/monthly/date-provider";
 import { MonthDateProvider } from "@/components/calendar/monthly/date-provider";
 import { Overview } from "@/components/calendar/monthly/overview";
-import { Streaks } from "@/components/calendar/monthly/streaks";
 import { Button } from "@/components/ui/button";
 import { DAYS, MONTHS } from "@/constants";
 import { type Dayjs, dayjs, normalizeDate } from "@/lib/day";
@@ -123,12 +122,12 @@ export function HabitStats() {
 				</h3>
 				<WeekChart />
 			</div>
-			<div className="my-4">
+			{/* <div className="my-4">
 				<h3 className="font-bold text-center mb-4 font-mathlete text-3xl tracking-widest">
 					Streaks
 				</h3>
 				<Streaks />
-			</div>
+			</div> */}
 		</>
 	);
 }

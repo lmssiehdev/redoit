@@ -1,16 +1,16 @@
 "use client";
 
-import { use } from 'react'
 import { GoToMainPageButton } from "@/components/calendar/weekly/misc";
 import { HabitForm } from "@/components/habit-form";
 import { useHabitsStore } from "@/state";
 import { useRouter } from "next/navigation";
+import { use } from "react";
 
 type Params = Promise<{ id: string }>;
 
-export default function EditHabit(props: { params: Params } ) {
+export default function EditHabit(props: { params: Params }) {
 	const params = use(props.params);
-	const {id: habitId} = params;
+	const { id: habitId } = params;
 	const updateHabitData = useHabitsStore((state) => state.updateHabitData);
 	const getHabitData = useHabitsStore((state) => state.getHabitData);
 	const habitData = getHabitData(habitId);

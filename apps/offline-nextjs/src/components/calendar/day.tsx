@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useSettingsStore } from "@/state/settings";
 import { Status } from "@/types";
 import { Slot } from "@radix-ui/react-slot";
+
 import {
 	type GlobalOptions as ConfettiGlobalOptions,
 	type Options as ConfettiOptions,
@@ -79,6 +80,9 @@ export function DayWithToolTip({
 		const y = rect.top + rect.height / 2;
 		confetti({
 			...options,
+			disableForReducedMotion: true,
+			startVelocity: 30,
+			particleCount: 40,
 			origin: {
 				x: x / window.innerWidth,
 				y: y / window.innerHeight,
@@ -110,7 +114,7 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
 			<Comp
 				className={cn(
 					"overflow-hidden border border-dashed border-black h-10 disabled:opacity-30 w-full",
-					className
+					className,
 				)}
 				style={{
 					backgroundColor,

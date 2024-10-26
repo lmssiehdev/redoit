@@ -46,7 +46,7 @@ export function useHabit() {
 export default function HabitView({ params }: { params: { id: string } }) {
   const habitId = params.id;
   if (typeof window === "undefined") {
-    return <div suppressHydrationWarning>{null}</div>;
+    return <div suppressHydrationWarning><div>{null}</div></div>;
   }
   return (
     <div className="mx-auto grid md:grid-cols-2  gap-10">

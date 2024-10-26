@@ -4,7 +4,8 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
-		"lint": "biome check --write"
+		"lint": "biome check --write",
+		"clean-packages": "pnpm -r exec rm -rf node_modules"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.3",
@@ -14,5 +15,10 @@
 	"packageManager": "pnpm@8.15.6",
 	"engines": {
 		"node": ">=18"
+	},
+	"pnpm": {
+		"overrides": {
+			"react-is": "^19.0.0-beta-26f2496093-20240514"
+		}
 	}
 }

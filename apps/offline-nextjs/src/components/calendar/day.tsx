@@ -96,7 +96,7 @@ export interface ButtonProps
 }
 
 export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
-	({ asChild = false, color, isActive, status, ...props }, ref) => {
+	({ className, asChild = false, color, isActive, status, ...props }, ref) => {
 		const Comp = asChild ? Slot : "button";
 		const normalizedColor = normalizeColor(color);
 		const backgroundColor = !isActive
@@ -110,6 +110,7 @@ export const Day = forwardRef<HTMLButtonElement, ButtonProps>(
 			<Comp
 				className={cn(
 					"overflow-hidden border border-dashed border-black h-10 disabled:opacity-30 w-full",
+					className
 				)}
 				style={{
 					backgroundColor,

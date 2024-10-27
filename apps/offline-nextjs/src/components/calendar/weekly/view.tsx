@@ -24,6 +24,7 @@ import dayjs from "dayjs";
 import { formatDateRange } from "little-date";
 import { useEffect } from "react";
 
+import { normalizeColor } from "@/components/calendar/monthly/overview";
 import {
   WeeklyDateProvider,
   useWeeklyDate,
@@ -32,7 +33,6 @@ import { RepeatedHeader } from "@/components/calendar/weekly/misc";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { Status } from "@/types";
-import { TinyColor } from "@ctrl/tinycolor";
 import {
   DndContext,
   type DragEndEvent,
@@ -57,7 +57,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { normalizeColor } from "@/components/calendar/monthly/overview";
 
 export function WeeklyNavigation() {
   const { NEXT_DAY, PREV_DAY, dateArray } = useWeeklyDate();
@@ -240,7 +239,12 @@ export function HabitRow({ archived = false }) {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
-        modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+        modifiers={[
+          restrictToVerticalAxis,
+          restrictToWindowEdges,
+          // TODO:
+          // restrictToFirstScrollableAncestor,
+        ]}
       >
         <SortableContext
           items={habitsToRender}
@@ -318,8 +322,17 @@ function StreakRow() {
   }
 
   return (
-    <div className="flex items-center justify-between gap-2 sm:grid sm:grid-cols-[minmax(0px,200px),6fr,40px]">
-      <div />
+    <div className="flex items-center justify-between gap-2 sm:grid sm:grid-cols-[minmax(0px,200px),6fr,40px] mt-1">
+      <Link
+        href="/add"
+        className={cn(
+          buttonVariants({ size: "sm", variant: "outline" }),
+          "flex items-center gap-1"
+        )}
+      >
+        <Plus weight="bold" className="size-3" />
+        Add habit
+      </Link>
       <div className="grid grid-cols-7 gap-2 py-1 text-center">
         {dateArray.map((date) => (
           <div key={date}>{caluculateDateStreak(date)}</div>

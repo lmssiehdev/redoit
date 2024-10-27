@@ -30,7 +30,7 @@ export default function RootLayout({
 						"font-display",
 					)}
 				>
-					<nav className="p-2 flex text-center items-center justify-between gap-2 text-lg">
+          <nav className="py-2 flex text-center items-center justify-between gap-2 text-lg">
 						<Link
 							href="/"
 							// activeProps={{
@@ -66,7 +66,7 @@ export default function RootLayout({
 								href="/add"
 								className={cn(
 									buttonVariants({ size: "sm" }),
-									"flex items-center gap-1",
+                  "flex items-center gap-1"
 								)}
 							>
 								{/* <Plus weight="bold" className="size-3" /> */}

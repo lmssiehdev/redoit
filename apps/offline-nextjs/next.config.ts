@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				source: "/feedback",
-				destination: "https://tally.so/r/wvMWaA",
+				destination: "https://tally.so/r/wAbG7B",
 			},
 			{
 				source: "/ingest/static/:path*",

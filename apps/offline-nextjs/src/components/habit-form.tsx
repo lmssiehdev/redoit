@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { ColorPicker } from "@/components/colorPicker";
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { DAYS } from "@/constants";
+import { DAYS, DEFAULT_HABIT_COLOR } from "@/constants";
 import type { HabitData } from "@/types";
 import { usePostHog } from "posthog-js/react";
 import { useMemo } from "react";
@@ -60,7 +60,7 @@ export function HabitForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: habitData?.name ?? "",
-			color: habitData?.color ?? "#81968d",
+			color: habitData?.color ?? DEFAULT_HABIT_COLOR,
 			archived: habitData?.isArchived ?? false,
 			frequency: frequencyBooleanToString(habitData?.frequency),
 		},

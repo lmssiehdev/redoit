@@ -1,18 +1,6 @@
 import { Popover, PopoverContent } from "@/components/ui/popover";
+import { colors } from "@/constants";
 import { PopoverTrigger } from "@radix-ui/react-popover";
-
-export const colors = [
-	"#1d4ed8",
-	"#ea580c",
-	"#dc2626",
-	"#65a30d",
-	"#16a34a",
-	"#059669",
-	"#0891b2",
-	"#db2777",
-	"#c026d3",
-	"#0d9488",
-];
 
 export function ColorPicker({
 	value,

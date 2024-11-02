@@ -104,7 +104,7 @@ export function HabitForm({
 							<FormItem className="w-full">
 								<FormLabel>Name</FormLabel>
 								<FormControl>
-									<Input placeholder="name" {...field} />
+									<Input placeholder="name" autoComplete="off" {...field} />
 								</FormControl>
 
 								<FormMessage />

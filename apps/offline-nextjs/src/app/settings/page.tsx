@@ -11,9 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { useSettingsStore } from "@/state/settings";
 
 export default function Settings() {
-	const { toggleConfetti, confettiEnabled } = useSettingsStore(
-		(state) => state,
-	);
+	const { toggleConfetti, confettiEnabled, darkModeEnabled, toggleDarkMode } =
+		useSettingsStore((state) => state);
 
 	return (
 		<div className="flex min-h-screen w-full flex-col">
@@ -29,15 +28,6 @@ export default function Settings() {
 						</CardHeader>
 						<CardContent>
 							<form className="flex flex-col gap-4">
-								{/* <div className="flex items-center space-x-2">
-                  <label
-                    htmlFor="countSkippedDays"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mr-auto"
-                  >
-                    Count Skipped Days in Streak
-                  </label>
-                  <Switch id="countSkippedDays" defaultChecked />
-                </div> */}
 								<div className="flex items-center space-x-2">
 									<label
 										htmlFor="showConfetti"
@@ -51,11 +41,21 @@ export default function Settings() {
 										onCheckedChange={toggleConfetti}
 									/>
 								</div>
+								<div className="flex items-center space-x-2">
+									<label
+										htmlFor="darkMode"
+										className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mr-auto"
+									>
+										Dark Mode
+									</label>
+									<Switch
+										id="darkMode"
+										checked={darkModeEnabled}
+										onCheckedChange={toggleDarkMode}
+									/>
+								</div>
 							</form>
 						</CardContent>
-						{/* <CardFooter className="border-t px-6 py-4">
-              <Button>Save</Button>
-            </CardFooter> */}
 					</Card>
 				</div>
 			</main>

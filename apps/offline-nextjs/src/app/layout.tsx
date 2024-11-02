@@ -1,23 +1,22 @@
+"use client";
+
 import { Button, buttonVariants } from "@/components/ui/button";
 import { excalifont, mathlete, neucha, pacifico } from "@/fonts/fonts";
 import { cn } from "@/lib/utils";
 import { PostHogProviderWrapper } from "@/providers/post-hog";
-import type { Metadata } from "next";
+import { useSettingsStore } from "@/state/settings";
 import Link from "next/link";
 import "./globals.css";
-
-export const metadata: Metadata = {
-	title: "redoit!",
-	description: "Your radically easy-to-use habit tracker",
-};
 
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const darkModeEnabled = useSettingsStore((state) => state.darkModeEnabled);
+
 	return (
-		<html lang="en">
+		<html lang="en" className={darkModeEnabled ? "dark" : ""}>
 			<PostHogProviderWrapper>
 				<body
 					className={cn(

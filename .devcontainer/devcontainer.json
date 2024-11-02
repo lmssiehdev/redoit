@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "launch": "pnpm install && pnpm dev"
+  }
+}

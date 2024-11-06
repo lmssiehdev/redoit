@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { type Control, useController, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -112,85 +112,7 @@ export function HabitForm({
 						)}
 					/>
 				</div>
-				{/* TODO: refactor */}
-				<FormField
-					control={form.control}
-					name="frequency"
-					render={({ field }) => (
-						<FormItem className="my-4">
-							<FormLabel>Frequency</FormLabel>
-
-							<FormControl>
-								<ToggleGroup
-									type="multiple"
-									onValueChange={field.onChange}
-									className="gap-0"
-									value={field.value}
-								>
-									{DAYS.map((day, index) => (
-										<ToggleGroupItem
-											key={day}
-											value={index.toString()}
-											aria-label={`Toggle ${day}`}
-											className="hover:bg-purple-30 h-6 w-6 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400"
-										>
-											{day.substring(0, 3)}
-										</ToggleGroupItem>
-									))}
-								</ToggleGroup>
-							</FormControl>
-							<div className="grid grid-cols-2 gap-2">
-								<button
-									type="button"
-									onClick={() => {
-										field.onChange(
-											frequencyBooleanToString([
-												false,
-												true,
-												true,
-												true,
-												true,
-												true,
-												false,
-											]),
-										);
-									}}
-									data-state={
-										field.value.length === 5 &&
-										!field.value.includes("0") &&
-										!field.value.includes("6")
-											? "on"
-											: "off"
-									}
-									className="hover:bg-purple-30 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400 text-xs"
-								>
-									Week Days
-								</button>
-								<button
-									type="button"
-									onClick={() => {
-										field.onChange(
-											frequencyBooleanToString([
-												true,
-												true,
-												true,
-												true,
-												true,
-												true,
-												true,
-											]),
-										);
-									}}
-									data-state={field.value.length === 7 ? "on" : "off"}
-									className="hover:bg-purple-30 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400 text-xs"
-								>
-									EveryDay
-								</button>
-							</div>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+				<FrequencyForm control={form.control} />
 				{isEditing && (
 					<FormField
 						control={form.control}
@@ -225,5 +147,92 @@ export function HabitForm({
 				</Button>
 			</form>
 		</Form>
+	);
+}
+
+function FrequencyForm({
+	control,
+}: {
+	control: Control<{
+    name: string;
+    color: string;
+    archived: boolean;
+    frequency: string[];
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+}, any>;
+}) {
+  const { field: { value, onChange } } = useController({ control , name: "frequency"});
+
+  const handleWeekDaysClick = () => {
+    onChange(
+      frequencyBooleanToString([false, true, true, true, true, true, false]),
+    );
+  };
+
+  const handleEveryDayClick = () => {
+    onChange(
+      frequencyBooleanToString([true, true, true, true, true, true, true]),
+    );
+  };
+
+  const isWeekDaysSelected = value.length === 5 && !value.includes('0') && !value.includes('6');
+  const isEveryDaySelected = value.length === 7;
+
+	return (
+		<FormField
+			control={control}
+			name="frequency"
+			render={({ field }) => (
+				<FormItem className="my-4">
+					<FormLabel>Frequency</FormLabel>
+
+					<FormControl>
+						<ToggleGroup
+							type="multiple"
+							onValueChange={(value) => {
+                if ( value.length === 0 ) return;
+                field.onChange(value)
+              }}
+							className="gap-0"
+							value={field.value}
+						>
+							{DAYS.map((day, index) => (
+								<ToggleGroupItem
+									key={day}
+									value={index.toString()}
+									aria-label={`Toggle ${day}`}
+									className="hover:bg-purple-30 h-6 w-6 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400"
+								>
+									{day.substring(0, 3)}
+								</ToggleGroupItem>
+							))}
+						</ToggleGroup>
+					</FormControl>
+					<div className="grid grid-cols-2 gap-2">
+						<button
+							type="button"
+							onClick={handleWeekDaysClick}
+							data-state={
+								isWeekDaysSelected 
+									? "on"
+									: "off"
+							}
+							className="hover:bg-purple-30 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400 text-xs"
+						>
+							Week Days
+						</button>
+						<button
+							type="button"
+							onClick={handleEveryDayClick}
+							data-state={isEveryDaySelected ? "on" : "off"}
+							className="hover:bg-purple-30 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400 text-xs"
+						>
+							EveryDay
+						</button>
+					</div>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }

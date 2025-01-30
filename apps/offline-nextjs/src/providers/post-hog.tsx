@@ -31,6 +31,7 @@ export function PostHogProviderWrapper({
 	children: React.ReactNode;
 }) {
 	useEffect(() => {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
 		posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
 			api_host: "/ingest",
 			person_profiles: "identified_only",

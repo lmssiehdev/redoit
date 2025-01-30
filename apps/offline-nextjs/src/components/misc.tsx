@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { ArrowLeft } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function GoToMainPageButton() {
 	const { back } = useRouter();
@@ -13,10 +13,12 @@ export function GoToMainPageButton() {
 	);
 }
 
-export function RepeatedHeader({ word }: { word: "habits" | "archived" }) {
+export function RepeatedHeader({ word }: { word: "habits" | "archived" | "stats" }) {
+  // @HACKY: use tailwind safelist
 	const content = {
 		habits: "after:content-['habits']",
 		archived: "after:content-['archived']",
+    stats: "after:content-['stats']",
 	};
 	return (
 		<span

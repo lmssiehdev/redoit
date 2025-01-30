@@ -28,8 +28,8 @@ import { normalizeColor } from "@/components/calendar/monthly/overview";
 import {
 	WeeklyDateProvider,
 	useWeeklyDate,
-} from "@/components/calendar/weekly/date-provider";
-import { RepeatedHeader } from "@/components/calendar/weekly/misc";
+} from "@/providers/weekly-navigation";
+import { RepeatedHeader } from "@/components/misc";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { Status } from "@/types";

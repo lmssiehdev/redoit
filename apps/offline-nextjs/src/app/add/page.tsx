@@ -1,6 +1,6 @@
 "use client";
 
-import { GoToMainPageButton } from "@/components/calendar/weekly/misc";
+import { GoToMainPageButton } from "@/components/misc";
 import { HabitForm } from "@/components/habit-form";
 import { useHabitsStore } from "@/state";
 import { useRouter } from "next/navigation";

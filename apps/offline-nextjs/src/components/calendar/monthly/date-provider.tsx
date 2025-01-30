@@ -23,7 +23,7 @@ function monthReducer(state: typeof initialState, action: Action) {
 	}
 }
 
-export function useMonth() {
+function useMonth() {
 	const [state, dispatch] = useImmerReducer(monthReducer, initialState);
 
 	const goToPrevMonth = useCallback(

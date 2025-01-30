@@ -2,7 +2,7 @@
 
 import { HabitProvider, useHabit } from "@/app/habit/[id]/_provider";
 import { HabitStats, MonthlyView } from "@/components/calendar/monthly/view";
-import { GoToMainPageButton } from "@/components/calendar/weekly/misc";
+import { GoToMainPageButton } from "@/components/misc";
 import { HabitColor } from "@/components/calendar/weekly/view";
 import { buttonVariants } from "@/components/ui/button";
 import { Archive, PencilSimple } from "@phosphor-icons/react";
@@ -14,13 +14,6 @@ type Params = Promise<{ id: string }>;
 export default function HabitView(props: { params: Params }) {
 	const params = use(props.params);
 	const { id: habitId } = params;
-	if (typeof window === "undefined") {
-		return (
-			<div suppressHydrationWarning>
-				<div>{null}</div>
-			</div>
-		);
-	}
 	return (
 		<div className="mx-auto grid md:grid-cols-2  gap-10">
 			<HabitProvider habitId={habitId as string}>

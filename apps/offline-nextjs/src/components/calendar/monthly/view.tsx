@@ -1,8 +1,8 @@
 import { useHabit } from "@/app/habit/[id]/_provider";
 import { DayWithToolTip } from "@/components/calendar/day";
 import { WeekChart } from "@/components/calendar/monthly/charts";
-import { useMonthContext } from "@/components/calendar/monthly/date-provider";
-import { MonthDateProvider } from "@/components/calendar/monthly/date-provider";
+import { useMonthContext } from "@/providers/monthly-navigation";
+import { MonthDateProvider } from "@/providers/monthly-navigation";
 import { Overview } from "@/components/calendar/monthly/overview";
 import { Button } from "@/components/ui/button";
 import { DAYS, MONTHS } from "@/constants";
@@ -88,7 +88,6 @@ export function MonthlyView() {
 				</div>
 				<MonthlyCalendar />
 			</div>
-			{/* <ShareProgress /> */}
 		</MonthDateProvider>
 	);
 }

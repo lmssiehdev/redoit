@@ -1,13 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	/* config options here */
-	async rewrites() {
-		return [
+  async redirects() {
+    return [
 			{
 				source: "/feedback",
 				destination: "https://tally.so/r/wAbG7B",
+        statusCode: 302
 			},
+    ]
+  },
+  async rewrites() {
+		return [
 			{
 				source: "/ingest/static/:path*",
 				destination: "https://us-assets.i.posthog.com/static/:path*",

@@ -21,6 +21,8 @@ import type { HabitData } from "@/types";
 import { usePostHog } from "posthog-js/react";
 import { useMemo } from "react";
 
+const HABIT_NAME_MAX_LENGTH = 30;
+
 function frequencyBooleanToString(payload?: boolean[]) {
 	if (!payload) return Array.from({ length: 7 }, (_, i) => String(i));
 	const frequency: string[] = [];
@@ -39,7 +41,7 @@ function frequencyStringToBoolean(payload: string[]) {
 const formSchema = z.object({
 	name: z.string().min(1, {
 		message: "Please provide a valid name.",
-	}),
+	}).transform((val) => val.trim().slice(0, HABIT_NAME_MAX_LENGTH)),
 	color: z.string(),
 	archived: z.boolean(),
 	frequency: z.string().array(),
@@ -104,7 +106,7 @@ export function HabitForm({
 							<FormItem className="w-full">
 								<FormLabel>Name</FormLabel>
 								<FormControl>
-									<Input placeholder="name" autoComplete="off" {...field} />
+									<Input maxLength={HABIT_NAME_MAX_LENGTH} placeholder="name" autoComplete="off" {...field} />
 								</FormControl>
 
 								<FormMessage />

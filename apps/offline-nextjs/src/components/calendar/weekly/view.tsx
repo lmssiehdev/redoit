@@ -194,7 +194,7 @@ export function SortableHabitRow({ habitId }: { habitId: string }) {
 						<HabitColor color={color} className="mr-2" />
 						<Link
 							href={`/habit/${habitId}`}
-							className="flex items-center gap-2"
+							className="flex items-center gap-2 overflow-hidden whitespace-nowrap text-ellipsis flex-1"
 						>
 							{name}
 						</Link>

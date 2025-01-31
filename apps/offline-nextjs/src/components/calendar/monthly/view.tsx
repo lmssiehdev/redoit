@@ -1,10 +1,10 @@
-import { useHabit } from "@/app/habit/[id]/_provider";
 import { DayWithToolTip } from "@/components/calendar/day";
 import { WeekChart } from "@/components/calendar/monthly/charts";
 import { Overview } from "@/components/calendar/monthly/overview";
 import { Button } from "@/components/ui/button";
 import { DAYS, MONTHS } from "@/constants";
 import { type Dayjs, dayjs, normalizeDate } from "@/lib/day";
+import { useHabit } from "@/providers/habit-provider";
 import { useMonthContext } from "@/providers/monthly-navigation";
 import { MonthDateProvider } from "@/providers/monthly-navigation";
 import { useHabitsStore } from "@/state";

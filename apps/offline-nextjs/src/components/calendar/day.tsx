@@ -1,5 +1,4 @@
 "use client";
-import { useHabit } from "@/app/habit/[id]/_provider";
 import { normalizeColor } from "@/components/calendar/monthly/overview";
 import {
 	Tooltip,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { type Dayjs, dayjs, normalizeDate } from "@/lib/day";
 import { cn } from "@/lib/utils";
+import { useHabit } from "@/providers/habit-provider";
 import { useSettingsStore } from "@/state/settings";
 import { Status } from "@/types";
 

@@ -1,3 +1,4 @@
+import { normalizeColor } from "@/components/calendar/monthly/overview";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "@phosphor-icons/react";
@@ -31,5 +32,23 @@ export function RepeatedHeader({
 		>
 			{word}
 		</span>
+	);
+}
+
+export function HabitColor({
+	color,
+	className,
+}: {
+	color: string;
+	className?: string;
+}) {
+	const { dayCompletedColor } = normalizeColor(color);
+	return (
+		<div
+			className={cn("size-3 rounded-full", className)}
+			style={{
+				backgroundColor: dayCompletedColor,
+			}}
+		/>
 	);
 }

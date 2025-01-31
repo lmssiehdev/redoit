@@ -1,9 +1,9 @@
-import { useHabit } from "@/app/habit/[id]/_provider";
 import { percentage } from "@/lib/completion-rate";
 import { completionRate as completionRateRewrite } from "@/lib/completion-rate";
 import { summary } from "@/lib/date-streaks";
 import { differenceInDays, sortDates } from "@/lib/day";
 import { LightenDarkenColor, convertHex, lightOrDark } from "@/lib/utils";
+import { useHabit } from "@/providers/habit-provider";
 import { useSettingsStore } from "@/state/settings";
 import { Status } from "@/types";
 import { CheckFat, Lightning, Percent } from "@phosphor-icons/react";

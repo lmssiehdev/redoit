@@ -8,12 +8,11 @@ import { use } from "react";
 
 type Params = Promise<{ id: string }>;
 
-export default function EditHabit(props: { params: Params }) {
+export default function Page(props: { params: Params }) {
 	const params = use(props.params);
 	const { id: habitId } = params;
 	const updateHabitData = useHabitsStore((state) => state.updateHabitData);
-	const getHabitData = useHabitsStore((state) => state.getHabitData);
-	const habitData = getHabitData(habitId);
+	const habitData = useHabitsStore((state) => state.data[habitId]);
 	const router = useRouter();
 
 	return (

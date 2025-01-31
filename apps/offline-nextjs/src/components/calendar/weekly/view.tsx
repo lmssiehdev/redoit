@@ -1,4 +1,5 @@
-import { HabitProvider } from "@/app/habit/[id]/_provider";
+"use client";
+
 import { DayWithToolTip } from "@/components/calendar/day";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DAYS } from "@/constants";
+import { HabitProvider } from "@/providers/habit-provider";
 import { useHabitsStore } from "@/state";
 import {
 	Archive,
@@ -19,13 +21,11 @@ import {
 	Plus,
 	StackPlus,
 } from "@phosphor-icons/react";
-import clsx from "clsx";
 import dayjs from "dayjs";
 import { formatDateRange } from "little-date";
 import { useEffect } from "react";
 
-import { normalizeColor } from "@/components/calendar/monthly/overview";
-import { RepeatedHeader } from "@/components/misc";
+import { HabitColor, RepeatedHeader } from "@/components/misc";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import {
@@ -58,7 +58,7 @@ import { CSS } from "@dnd-kit/utilities";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function WeeklyNavigation() {
+function WeeklyNavigation() {
 	const { NEXT_DAY, PREV_DAY, dateArray } = useWeeklyDate();
 
 	return (
@@ -102,24 +102,6 @@ export function WeeklyNavigation() {
 				<CaretRight className="h-5 w-5" />
 			</Button>
 		</div>
-	);
-}
-
-export function HabitColor({
-	color,
-	className,
-}: {
-	color: string;
-	className?: string;
-}) {
-	const { dayCompletedColor } = normalizeColor(color);
-	return (
-		<div
-			className={cn("size-3 rounded-full", className)}
-			style={{
-				backgroundColor: dayCompletedColor,
-			}}
-		/>
 	);
 }
 
@@ -179,7 +161,7 @@ export function SortableHabitRow({ habitId }: { habitId: string }) {
 				style={style}
 			>
 				<div className="my-2 grid grid-rows-2 gap-2 sm:grid-cols-[minmax(0px,200px),6fr,40px] sm:grid-rows-1 w-full">
-					<div className={clsx("flex items-center")}>
+					<div className={cn("flex items-center")}>
 						{!isArchived && (
 							<Button
 								className="cursor-grab active:cursor-grabbing mx-1 touch-none"

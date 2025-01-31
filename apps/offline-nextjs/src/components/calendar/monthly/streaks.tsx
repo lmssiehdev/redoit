@@ -1,6 +1,6 @@
-import { useHabit } from "@/app/habit/[id]/_provider";
 import { streakRanges } from "@/lib/date-streaks/streakRanges";
 import { LightenDarkenColor, cn, convertHex, lightOrDark } from "@/lib/utils";
+import { useHabit } from "@/providers/habit-provider";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 

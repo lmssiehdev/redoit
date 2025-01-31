@@ -28,7 +28,6 @@ export type Actions = {
 		status?: Status;
 	}) => void;
 	archiveHabit: (id: string, archived?: boolean) => void;
-	getHabitData: (id: string) => HabitData;
 	reorderHabit: ({
 		activeId,
 		overId,
@@ -38,7 +37,7 @@ export type Actions = {
 export const useHabitsStore = create<State & Actions>()(
 	immer(
 		persist(
-			(set, get) => ({
+			(set) => ({
 				data: {},
 				orderedData: [] as string[],
 				addHabit: (payload) => {
@@ -115,7 +114,6 @@ export const useHabitsStore = create<State & Actions>()(
 							newIndex,
 						);
 					}),
-				getHabitData: (id) => get().data[id],
 			}),
 			{
 				name: "habits",

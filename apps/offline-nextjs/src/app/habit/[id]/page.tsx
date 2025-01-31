@@ -1,10 +1,9 @@
 "use client";
 
-import { HabitProvider, useHabit } from "@/app/habit/[id]/_provider";
 import { HabitStats, MonthlyView } from "@/components/calendar/monthly/view";
-import { HabitColor } from "@/components/calendar/weekly/view";
-import { GoToMainPageButton } from "@/components/misc";
+import { GoToMainPageButton, HabitColor } from "@/components/misc";
 import { buttonVariants } from "@/components/ui/button";
+import { HabitProvider, useHabit } from "@/providers/habit-provider";
 import { Archive, PencilSimple } from "@phosphor-icons/react";
 import Link from "next/link";
 import { use } from "react";

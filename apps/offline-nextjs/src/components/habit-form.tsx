@@ -13,12 +13,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { ColorPicker } from "@/components/colorPicker";
+import { ColorPicker } from "@/components/color-picker";
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DAYS, DEFAULT_HABIT_COLOR } from "@/constants";
 import type { HabitData } from "@/types";
-import { usePostHog } from "posthog-js/react";
 import { useMemo } from "react";
 
 const HABIT_NAME_MAX_LENGTH = 30;
@@ -39,9 +38,12 @@ function frequencyStringToBoolean(payload: string[]) {
 }
 
 const formSchema = z.object({
-	name: z.string().min(1, {
-		message: "Please provide a valid name.",
-	}).transform((val) => val.trim().slice(0, HABIT_NAME_MAX_LENGTH)),
+	name: z
+		.string()
+		.min(1, {
+			message: "Please provide a valid name.",
+		})
+		.transform((val) => val.trim().slice(0, HABIT_NAME_MAX_LENGTH)),
 	color: z.string(),
 	archived: z.boolean(),
 	frequency: z.string().array(),
@@ -57,7 +59,7 @@ export function HabitForm({
 	) => void;
 }) {
 	const isEditing = useMemo(() => habitData?.name !== undefined, [habitData]);
-	const posthog = usePostHog();
+	const posthog = null; //?? usePostHog();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -77,7 +79,7 @@ export function HabitForm({
 			isArchived: archived,
 			frequency: frequencyStringToBoolean(frequency),
 		});
-		posthog.capture(isEditing ? "habit_update" : "habit_create");
+		// posthog.capture(isEditing ? "habit_update" : "habit_create");
 		// form.setValue("name", "");
 	}
 
@@ -106,7 +108,12 @@ export function HabitForm({
 							<FormItem className="w-full">
 								<FormLabel>Name</FormLabel>
 								<FormControl>
-									<Input maxLength={HABIT_NAME_MAX_LENGTH} placeholder="name" autoComplete="off" {...field} />
+									<Input
+										maxLength={HABIT_NAME_MAX_LENGTH}
+										placeholder="name"
+										autoComplete="off"
+										{...field}
+									/>
 								</FormControl>
 
 								<FormMessage />
@@ -161,8 +168,8 @@ function FrequencyForm({
 			color: string;
 			archived: boolean;
 			frequency: string[];
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		},
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		any
 	>;
 }) {

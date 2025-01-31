@@ -1,6 +1,5 @@
 "use client";
 
-import { useHabit } from "@/app/habit/[id]/_provider";
 import { normalizeColor } from "@/components/calendar/monthly/overview";
 import type { ChartConfig } from "@/components/ui/chart";
 import {
@@ -9,6 +8,7 @@ import {
 	ChartTooltipContent,
 } from "@/components/ui/chart";
 import { DAYS } from "@/constants";
+import { useHabit } from "@/providers/habit-provider";
 import { type HabitData, Status } from "@/types";
 import dayjs from "dayjs";
 import { Bar, BarChart, XAxis } from "recharts";

@@ -2,59 +2,67 @@ import { type ValidDate, differenceInDays } from "@/lib/date-streaks/helpers";
 import { sortDates } from "@/lib/day";
 import dayjs from "dayjs";
 
-export function completionRate(dates: ValidDate[], frequency?: boolean[], debug?: boolean) {
-  const sortedDates = sortDates(
-    dates.map((d) => dayjs(d).toDate()),
-  );
+export function completionRate(
+	dates: ValidDate[],
+	frequency?: boolean[],
+	debug?: boolean,
+) {
+	const sortedDates = sortDates(dates.map((d) => dayjs(d).toDate()));
 
-  if (sortedDates.length === 0) return "0%";
+	if (sortedDates.length === 0) return "0%";
 
-  // let firstDate = sortedDates[0];
-  
-  // if ( frequency ) {
-    //   const activeDates = sortedDates.filter(date => frequency[date.getDay()]);
-  //   if (activeDates.length === 0) return "100%";
+	// let firstDate = sortedDates[0];
 
-  //   firstDate = activeDates[0];
-  // }
-  
-  let completedDays = sortedDates.length;
+	// if ( frequency ) {
+	//   const activeDates = sortedDates.filter(date => frequency[date.getDay()]);
+	//   if (activeDates.length === 0) return "100%";
 
-  for (let i = 0; i < sortedDates.length; i++) {
-    const currentDate = dayjs(sortedDates[i]);
+	//   firstDate = activeDates[0];
+	// }
+
+	let completedDays = sortedDates.length;
+
+	for (let i = 0; i < sortedDates.length; i++) {
+		const currentDate = dayjs(sortedDates[i]);
 		const nextDate = sortedDates[i + 1] ? sortedDates[i + 1] : currentDate;
-    const diff = differenceInDays(nextDate, currentDate);
-    
-    if ( diff < 1 ) {
-      continue;
-    }
+		const diff = differenceInDays(nextDate, currentDate);
 
-    // diff is more than a week, or no frequency was provided
-    if ( diff > 7 || !frequency ) {
-      completedDays--;
-      if ( debug ) console.log("subtracted from here");
-      continue;
-    }
+		if (diff < 1) {
+			continue;
+		}
 
-    const daysTillNextDate = Array.from({ length: diff }, (_, j) =>
-      currentDate.add(j, "day")
-    );
-    const inactiveDays = daysTillNextDate
-      .map((date) => frequency?.[date.day()] ?? true)
-      .filter((isActive) => !isActive).length;
+		// diff is more than a week, or no frequency was provided
+		if (diff > 7 || !frequency) {
+			completedDays--;
+			if (debug) console.log("subtracted from here");
+			continue;
+		}
 
-    if (inactiveDays + 1 === diff) {
-      continue;
-    }
-    if ( debug ) {
-      console.log(inactiveDays+1, diff, currentDate.format("ll"), dayjs(nextDate).format("ll"), "reached")
-    }
-    completedDays--
-  }
+		const daysTillNextDate = Array.from({ length: diff }, (_, j) =>
+			currentDate.add(j, "day"),
+		);
+		const inactiveDays = daysTillNextDate
+			.map((date) => frequency?.[date.day()] ?? true)
+			.filter((isActive) => !isActive).length;
 
-  if ( debug ) console.log({ completedDays, total: sortedDates.length  })
-  return percentage(completedDays, sortedDates.length);
-};
+		if (inactiveDays + 1 === diff) {
+			continue;
+		}
+		if (debug) {
+			console.log(
+				inactiveDays + 1,
+				diff,
+				currentDate.format("ll"),
+				dayjs(nextDate).format("ll"),
+				"reached",
+			);
+		}
+		completedDays--;
+	}
+
+	if (debug) console.log({ completedDays, total: sortedDates.length });
+	return percentage(completedDays, sortedDates.length);
+}
 
 export function percentage(partialValue: number, totalValue: number) {
 	return `${((100 * partialValue) / totalValue).toFixed()}%`;

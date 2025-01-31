@@ -1,7 +1,7 @@
 "use client";
 
-import { GoToMainPageButton } from "@/components/misc";
 import { HabitForm } from "@/components/habit-form";
+import { GoToMainPageButton } from "@/components/misc";
 import { useHabitsStore } from "@/state";
 import { useRouter } from "next/navigation";
 import { use } from "react";

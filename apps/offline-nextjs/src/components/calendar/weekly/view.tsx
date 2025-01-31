@@ -25,13 +25,13 @@ import { formatDateRange } from "little-date";
 import { useEffect } from "react";
 
 import { normalizeColor } from "@/components/calendar/monthly/overview";
+import { RepeatedHeader } from "@/components/misc";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 import {
 	WeeklyDateProvider,
 	useWeeklyDate,
 } from "@/providers/weekly-navigation";
-import { RepeatedHeader } from "@/components/misc";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { cn } from "@/lib/utils";
 import { Status } from "@/types";
 import {
 	DndContext,

@@ -2,8 +2,8 @@
 
 import { HabitProvider, useHabit } from "@/app/habit/[id]/_provider";
 import { HabitStats, MonthlyView } from "@/components/calendar/monthly/view";
-import { GoToMainPageButton } from "@/components/misc";
 import { HabitColor } from "@/components/calendar/weekly/view";
+import { GoToMainPageButton } from "@/components/misc";
 import { buttonVariants } from "@/components/ui/button";
 import { Archive, PencilSimple } from "@phosphor-icons/react";
 import Link from "next/link";

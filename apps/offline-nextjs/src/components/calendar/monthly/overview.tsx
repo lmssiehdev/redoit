@@ -1,5 +1,6 @@
 import { useHabit } from "@/app/habit/[id]/_provider";
 import { percentage } from "@/lib/completion-rate";
+import { completionRate as completionRateRewrite } from "@/lib/completion-rate";
 import { summary } from "@/lib/date-streaks";
 import { differenceInDays, sortDates } from "@/lib/day";
 import { LightenDarkenColor, convertHex, lightOrDark } from "@/lib/utils";
@@ -9,7 +10,6 @@ import { CheckFat, Lightning, Percent } from "@phosphor-icons/react";
 import { CalendarBlank } from "@phosphor-icons/react/dist/ssr";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import { completionRate as completionRateRewrite, } from "@/lib/completion-rate"
 
 export function normalizeColor(color: string) {
 	const isLightColor = lightOrDark(color) === "light";
@@ -67,20 +67,28 @@ export function Overview() {
 			return percentage(successfulDays, totalDays);
 		};
 
-    console.log(
-      Object.entries(dates).filter(
-        ([key, value]) => countSkippedDaysInStreak || value === Status.Completed,
-      ).map(([key]) => key), frequency
-    )
+		console.log(
+			Object.entries(dates)
+				.filter(
+					([key, value]) =>
+						countSkippedDaysInStreak || value === Status.Completed,
+				)
+				.map(([key]) => key),
+			frequency,
+		);
 
-    console.log(
-      {
-        old: completionRate(),
-        new: completionRateRewrite(Object.entries(dates).filter(
-          ([key, value]) => countSkippedDaysInStreak || value === Status.Completed,
-        ).map(([key]) => key), frequency)
-      }
-    )
+		console.log({
+			old: completionRate(),
+			new: completionRateRewrite(
+				Object.entries(dates)
+					.filter(
+						([key, value]) =>
+							countSkippedDaysInStreak || value === Status.Completed,
+					)
+					.map(([key]) => key),
+				frequency,
+			),
+		});
 		return [
 			{
 				name: "Current Streak",
@@ -145,4 +153,3 @@ export function Overview() {
 		</>
 	);
 }
-

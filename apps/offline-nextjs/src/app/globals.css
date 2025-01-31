@@ -1,8 +1,8 @@
 @tailwind base;
 @layer base {
-  img {
-    @apply inline-block;
-  }
+	img {
+		@apply inline-block;
+	}
 }
 @tailwind components;
 @tailwind utilities;
@@ -73,7 +73,7 @@
 }
 
 .polkadot {
-  background-color: rgba(252, 139, 147, 0.3);
+	background-color: rgba(252, 139, 147, 0.3);
 	background-image: radial-gradient(circle, #fc8b93 20%, transparent 20%),
 		radial-gradient(circle, #fc8b93 20%, transparent 20%);
 	background-size: 10px 10px, 10px 10px;
@@ -81,8 +81,8 @@
 }
 
 .polkadot-svg {
-  /* background-color: rgba(252, 139, 147, 0.3);
+	/* background-color: rgba(252, 139, 147, 0.3);
   background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' viewBox='0 0 11 11' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23fc8b93'/%3E%3Ccircle cx='7' cy='7' r='1.4' fill='%23fc8b93'/%3E%3C/svg%3E"); */
-  background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' viewBox='0 0 11 11' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='11' height='11' fill='%23965784'/%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23fff'/%3E%3Ccircle cx='7' cy='7' r='1.4' fill='%23fff'/%3E%3C/svg%3E");
-  background-size: 10px 10px;
+	background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' viewBox='0 0 11 11' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='11' height='11' fill='%23965784'/%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23fff'/%3E%3Ccircle cx='7' cy='7' r='1.4' fill='%23fff'/%3E%3C/svg%3E");
+	background-size: 10px 10px;
 }

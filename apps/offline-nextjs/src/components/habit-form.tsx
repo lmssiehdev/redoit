@@ -153,30 +153,36 @@ export function HabitForm({
 function FrequencyForm({
 	control,
 }: {
-	control: Control<{
-    name: string;
-    color: string;
-    archived: boolean;
-    frequency: string[];
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-}, any>;
+	control: Control<
+		{
+			name: string;
+			color: string;
+			archived: boolean;
+			frequency: string[];
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		},
+		any
+	>;
 }) {
-  const { field: { value, onChange } } = useController({ control , name: "frequency"});
+	const {
+		field: { value, onChange },
+	} = useController({ control, name: "frequency" });
 
-  const handleWeekDaysClick = () => {
-    onChange(
-      frequencyBooleanToString([false, true, true, true, true, true, false]),
-    );
-  };
+	const handleWeekDaysClick = () => {
+		onChange(
+			frequencyBooleanToString([false, true, true, true, true, true, false]),
+		);
+	};
 
-  const handleEveryDayClick = () => {
-    onChange(
-      frequencyBooleanToString([true, true, true, true, true, true, true]),
-    );
-  };
+	const handleEveryDayClick = () => {
+		onChange(
+			frequencyBooleanToString([true, true, true, true, true, true, true]),
+		);
+	};
 
-  const isWeekDaysSelected = value.length === 5 && !value.includes('0') && !value.includes('6');
-  const isEveryDaySelected = value.length === 7;
+	const isWeekDaysSelected =
+		value.length === 5 && !value.includes("0") && !value.includes("6");
+	const isEveryDaySelected = value.length === 7;
 
 	return (
 		<FormField
@@ -190,9 +196,9 @@ function FrequencyForm({
 						<ToggleGroup
 							type="multiple"
 							onValueChange={(value) => {
-                if ( value.length === 0 ) return;
-                field.onChange(value)
-              }}
+								if (value.length === 0) return;
+								field.onChange(value);
+							}}
 							className="gap-0"
 							value={field.value}
 						>
@@ -212,11 +218,7 @@ function FrequencyForm({
 						<button
 							type="button"
 							onClick={handleWeekDaysClick}
-							data-state={
-								isWeekDaysSelected 
-									? "on"
-									: "off"
-							}
+							data-state={isWeekDaysSelected ? "on" : "off"}
 							className="hover:bg-purple-30 flex-1 rounded-none border-x border-y-0 border-solid  border-x-purple-200 bg-purple-50 p-1 text-center text-purple-300 first:border-0 last:border-0 data-[state=on]:bg-purple-100 data-[state=on]:text-purple-400 text-xs"
 						>
 							Week Days

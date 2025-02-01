@@ -70,7 +70,7 @@ export function Overview() {
 		console.log(
 			Object.entries(dates)
 				.filter(
-					([key, value]) =>
+					([_, value]) =>
 						countSkippedDaysInStreak || value === Status.Completed,
 				)
 				.map(([key]) => key),

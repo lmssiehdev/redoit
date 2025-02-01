@@ -21,7 +21,7 @@ export function normalizeDate(date: DateInput) {
 	return dayjs(date).format("YYYY-MM-DD");
 }
 
-export const startOfDay = (date: Date) => dayjs(date).startOf("day").toDate();
+export const startOfDay = (date: Date | Dayjs) => dayjs(date).startOf("day").toDate();
 
 export const sortDates = (dates: Date[]) =>
 	dates.sort((a, b) => startOfDay(a).getTime() - startOfDay(b).getTime());

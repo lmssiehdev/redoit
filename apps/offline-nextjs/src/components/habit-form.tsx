@@ -4,12 +4,12 @@ import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -59,7 +59,6 @@ export function HabitForm({
 	) => void;
 }) {
 	const isEditing = useMemo(() => habitData?.name !== undefined, [habitData]);
-	const posthog = null; //?? usePostHog();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {

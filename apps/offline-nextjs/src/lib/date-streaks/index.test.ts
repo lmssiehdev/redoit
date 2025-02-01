@@ -1,7 +1,7 @@
 import { summary as summaryRewrite } from "@/lib/date-streaks";
 import { subDays } from "@/lib/date-streaks/helpers";
 import streakRanges from "@/lib/date-streaks/streakRanges";
-import { startOfDay } from "@/lib/format-date-range";
+import { startOfDay } from "@/lib/day";
 import dayjs from "dayjs";
 import { describe, expect, it } from "vitest";
 

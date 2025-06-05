@@ -64,7 +64,7 @@ export default function RootLayout({
 							</Button>
 							<Link
 								target="_blank"
-								href="https://github.com/lmssiehdev/redoit-monorepo"
+								href="https://github.com/lmssiehdev/redoit"
 								className={cn(
 									buttonVariants({ size: "sm" }),
 									"flex items-center gap-1",

@@ -80,6 +80,7 @@ export default function RootLayout({
 						<span className="font-pacifico">{" • "}</span>
 						<Link
 							href="/feedback"
+							target="_blank"
 							className="text-[#65a30d] hover:opacity-70 underline underline-offset-2 font-bold"
 						>
 							send feedback ↗

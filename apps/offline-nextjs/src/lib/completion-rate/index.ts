@@ -1,9 +1,8 @@
-import { type ValidDate, differenceInDays } from "@/lib/date-streaks/helpers";
 import { sortDates } from "@/lib/day";
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 
 export function completionRate(
-	dates: ValidDate[],
+	dates: (string | Date | Dayjs)[],
 	frequency?: boolean[],
 	debug?: boolean,
 ) {
@@ -25,7 +24,7 @@ export function completionRate(
 	for (let i = 0; i < sortedDates.length; i++) {
 		const currentDate = dayjs(sortedDates[i]);
 		const nextDate = sortedDates[i + 1] ? sortedDates[i + 1] : currentDate;
-		const diff = differenceInDays(nextDate, currentDate);
+		const diff = dayjs(nextDate).diff(currentDate, "day");
 
 		if (diff < 1) {
 			continue;

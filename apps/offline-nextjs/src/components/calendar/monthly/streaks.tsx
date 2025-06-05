@@ -1,4 +1,4 @@
-import { streakRanges } from "@/lib/date-streaks/streakRanges";
+import streakRanges from "@/lib/streak-ranges";
 import { LightenDarkenColor, cn, convertHex, lightOrDark } from "@/lib/utils";
 import { useHabit } from "@/providers/habit-provider";
 import dayjs from "dayjs";

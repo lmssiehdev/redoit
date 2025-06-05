@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
-import { type ValidDate, sortDates } from "./helpers";
-import { summary } from "./index";
+import { sortDates, calculateStreaks as summary } from "@/lib/streaks/index";
 
 type StreakRange = {
 	start: Date;
@@ -8,12 +7,12 @@ type StreakRange = {
 	duration: number;
 };
 
-export function streakRanges(dates: ValidDate[]) {
+export function streakRanges(dates: (string | Date)[]) {
 	if (dates.length === 0) {
 		return [];
 	}
 
-	const { streaks = [] } = summary(dates);
+	const { streaks } = summary({ dates: dates.map((date) => dayjs(date).toDate()) });
 	const allDates = [...sortDates(dates.map((date) => dayjs(date)))];
 
 	const result = streaks.reduce((acc, streak) => {
@@ -31,6 +30,7 @@ export function streakRanges(dates: ValidDate[]) {
 		}
 
 		return [
+			// biome-ignore lint/performance/noAccumulatingSpread: should be okay
 			...acc,
 			{
 				start,

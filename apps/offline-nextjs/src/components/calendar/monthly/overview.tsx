@@ -1,6 +1,6 @@
 import { percentage } from "@/lib/completion-rate";
 import { completionRate as completionRateRewrite } from "@/lib/completion-rate";
-import { summary } from "@/lib/date-streaks";
+import { calculateStreaks } from "@/lib/streaks";
 import { differenceInDays, sortDates } from "@/lib/day";
 import { LightenDarkenColor, convertHex, lightOrDark } from "@/lib/utils";
 import { useHabit } from "@/providers/habit-provider";
@@ -43,7 +43,12 @@ export function Overview() {
 	);
 
 	const { currentStreak, longestStreak } = useMemo(
-		() => summary(Object.keys(dates), frequency),
+		() => calculateStreaks({
+			dates: Object.keys(dates).map((d) => dayjs(d).toDate()),
+			shouldSkipDay: ({ tomorrow}) => {
+				return !frequency[tomorrow.day()];
+			}
+		}),
 		[dates, frequency],
 	);
 

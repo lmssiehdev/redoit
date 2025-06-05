@@ -1,16 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
+	async redirects() {
+		return [
 			{
 				source: "/feedback",
 				destination: "https://tally.so/r/wAbG7B",
-        statusCode: 302
+				statusCode: 302,
 			},
-    ]
-  },
-  async rewrites() {
+		];
+	},
+	async rewrites() {
 		return [
 			{
 				source: "/ingest/static/:path*",

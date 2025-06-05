@@ -13,7 +13,8 @@ export function generateId(length: number): string {
 	return nanoid();
 }
 
-export function convertHexToRGBA(hexCode: string, opacity = 1) {
+export function convertHexToRGBA(hexCode: string, o = 1) {
+	let opacity = o;
 	let hex = hexCode.replace("#", "");
 
 	if (hex.length === 3) {
@@ -35,8 +36,10 @@ export function convertHexToRGBA(hexCode: string, opacity = 1) {
 	return highlight;
 }
 
-export function LightenDarkenColor(color: string, percent: number) {
+export function LightenDarkenColor(c: string, percent: number) {
 	let usePound = false;
+
+	let color = c;
 
 	if (color[0] === "#") {
 		color = color.slice(1);

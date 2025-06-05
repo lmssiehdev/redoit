@@ -1,7 +1,7 @@
 import { percentage } from "@/lib/completion-rate";
 import { completionRate as completionRateRewrite } from "@/lib/completion-rate";
-import { calculateStreaks } from "@/lib/streaks";
 import { differenceInDays, sortDates } from "@/lib/day";
+import { calculateStreaks } from "@/lib/streaks";
 import { LightenDarkenColor, convertHex, lightOrDark } from "@/lib/utils";
 import { useHabit } from "@/providers/habit-provider";
 import { useSettingsStore } from "@/state/settings";
@@ -43,12 +43,13 @@ export function Overview() {
 	);
 
 	const { currentStreak, longestStreak } = useMemo(
-		() => calculateStreaks({
-			dates: Object.keys(dates).map((d) => dayjs(d).toDate()),
-			shouldSkipDay: ({ tomorrow}) => {
-				return !frequency[tomorrow.day()];
-			}
-		}),
+		() =>
+			calculateStreaks({
+				dates: Object.keys(dates).map((d) => dayjs(d).toDate()),
+				shouldSkipDay: ({ tomorrow }) => {
+					return !frequency[tomorrow.day()];
+				},
+			}),
 		[dates, frequency],
 	);
 
@@ -116,7 +117,13 @@ export function Overview() {
 				Icon: Percent,
 			},
 		];
-	}, [dates, currentStreak, longestStreak]);
+	}, [
+		dates,
+		currentStreak,
+		longestStreak,
+		frequency,
+		countSkippedDaysInStreak,
+	]);
 
 	const styles = useMemo(() => {
 		const { daySkippedColor } = normalizeColor(color);

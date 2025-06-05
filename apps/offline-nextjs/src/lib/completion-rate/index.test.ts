@@ -1,7 +1,5 @@
 import { completionRate } from "@/lib/completion-rate";
-import { dayjs } from "@/lib/day";
 import { describe, expect, it } from "vitest";
-
 
 // ! TODO: redo the whole test;
 describe("completion rate", () => {

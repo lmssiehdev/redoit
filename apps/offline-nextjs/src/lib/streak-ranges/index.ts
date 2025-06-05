@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import { sortDates, calculateStreaks as summary } from "@/lib/streaks/index";
+import dayjs from "dayjs";
 
 type StreakRange = {
 	start: Date;
@@ -12,7 +12,9 @@ export function streakRanges(dates: (string | Date)[]) {
 		return [];
 	}
 
-	const { streaks } = summary({ dates: dates.map((date) => dayjs(date).toDate()) });
+	const { streaks } = summary({
+		dates: dates.map((date) => dayjs(date).toDate()),
+	});
 	const allDates = [...sortDates(dates.map((date) => dayjs(date)))];
 
 	const result = streaks.reduce((acc, streak) => {

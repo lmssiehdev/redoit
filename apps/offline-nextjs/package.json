@@ -8,7 +8,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"test": "vitest",
-    "typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@ctrl/tinycolor": "^4.1.0",

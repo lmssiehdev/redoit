@@ -1,7 +1,6 @@
 import streakRanges from "@/lib/streak-ranges/index";
 import { describe, expect, it } from "vitest";
 
-
 describe("Streak Ranges", () => {
 	it("should report ranges of streaks", () => {
 		const result = streakRanges([

@@ -27,9 +27,10 @@ export default function RootLayout({
 							mathlete.variable,
 							excalifont.variable,
 						],
-						"font-display px-2 min-h-screen flex flex-col",
+						"font-display",
 					)}
 				>
+					<div className="px-2 min-h-screen flex flex-col">
 					<nav className="py-2 flex text-center items-center justify-between gap-2 text-lg">
 						<Link
 							href="/"
@@ -86,6 +87,7 @@ export default function RootLayout({
 							send feedback ↗
 						</Link>
 					</footer>
+					</div>
 				</body>
 			</PostHogProviderWrapper>
 		</html>

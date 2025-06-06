@@ -2,13 +2,6 @@
 
 import { DayWithToolTip } from "@/components/calendar/day";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DAYS } from "@/constants";
 import { HabitProvider } from "@/providers/habit-provider";
 import { useHabitsStore } from "@/state";
@@ -26,7 +19,15 @@ import { formatDateRange } from "little-date";
 import { useEffect } from "react";
 
 import { HabitColor, RepeatedHeader } from "@/components/misc";
+import {
+	DropDrawer,
+	DropDrawerContent,
+	DropDrawerItem,
+	DropDrawerSeparator,
+	DropDrawerTrigger,
+} from "@/components/ui/dropdrawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import {
 	WeeklyDateProvider,
@@ -261,9 +262,10 @@ export function HabitRowAction({
 	deleteFn: () => void;
 	isArchived: boolean;
 }) {
+	const isMobile = useIsMobile();
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+		<DropDrawer>
+			<DropDrawerTrigger asChild>
 				<Button
 					size="icon"
 					variant="ghost"
@@ -272,20 +274,20 @@ export function HabitRowAction({
 					<DotsThreeVertical weight="bold" className="h-5 w-5" />
 					<span className="sr-only">Open menu</span>
 				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-[160px]">
-				<DropdownMenuItem asChild>
-					<Link href={`/edit/${habitId}`}>Edit</Link>
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={archiveHabit}>
+			</DropDrawerTrigger>
+			<DropDrawerContent align="end" className={isMobile ? "" : "w-[160px]"}>
+				<Link href={`/edit/${habitId}`}>
+					<DropDrawerItem>Edit</DropDrawerItem>
+				</Link>
+				<DropDrawerSeparator />
+				<DropDrawerItem onClick={archiveHabit}>
 					{isArchived ? "Unarchive" : "Archive"}
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={deleteFn} className="!text-destructive">
+				</DropDrawerItem>
+				<DropDrawerItem onClick={deleteFn} className="!text-destructive">
 					Delete
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+				</DropDrawerItem>
+			</DropDrawerContent>
+		</DropDrawer>
 	);
 }
 

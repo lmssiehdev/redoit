@@ -106,7 +106,6 @@ describe("edge cases", () => {
 				return !freq[tomorrow.day()];
 			},
 		});
-		console.log({ result });
 		expect(result.longestStreak).toEqual(21);
 		expect(result.currentStreak).toEqual(0);
 		expect(result.streaks).toEqual([21, 15, 1]);

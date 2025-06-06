@@ -1,5 +1,4 @@
 import { percentage } from "@/lib/completion-rate";
-import { completionRate as completionRateRewrite } from "@/lib/completion-rate";
 import { differenceInDays, sortDates } from "@/lib/day";
 import { calculateStreaks } from "@/lib/streaks";
 import { LightenDarkenColor, convertHex, lightOrDark } from "@/lib/utils";
@@ -73,28 +72,6 @@ export function Overview() {
 			return percentage(successfulDays, totalDays);
 		};
 
-		console.log(
-			Object.entries(dates)
-				.filter(
-					([_, value]) =>
-						countSkippedDaysInStreak || value === Status.Completed,
-				)
-				.map(([key]) => key),
-			frequency,
-		);
-
-		console.log({
-			old: completionRate(),
-			new: completionRateRewrite(
-				Object.entries(dates)
-					.filter(
-						([key, value]) =>
-							countSkippedDaysInStreak || value === Status.Completed,
-					)
-					.map(([key]) => key),
-				frequency,
-			),
-		});
 		return [
 			{
 				name: "Current Streak",
@@ -121,7 +98,6 @@ export function Overview() {
 		dates,
 		currentStreak,
 		longestStreak,
-		frequency,
 		countSkippedDaysInStreak,
 	]);
 

@@ -41,9 +41,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.57.0)
-      '@instantdb/react':
-        specifier: ^0.17.33
-        version: 0.17.33(react@19.0.0-rc-69d4b800-20241021)
       '@phosphor-icons/react':
         specifier: ^2.1.10
         version: 2.1.10(react-dom@19.0.0-rc-69d4b800-20241021)(react@19.0.0-rc-69d4b800-20241021)
@@ -892,22 +889,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /@instantdb/core@0.17.33:
-    resolution: {integrity: sha512-naL7pb2n2qVU+8oTuybq851bQwJY3RDPGDk3PahJ1uIxKAYeb2+BxJ81na7ZKtYRaUGnmHeXgZSN2fUb5CoY/g==}
-    dependencies:
-      mutative: 1.2.0
-      uuid: 9.0.1
-    dev: false
-
-  /@instantdb/react@0.17.33(react@19.0.0-rc-69d4b800-20241021):
-    resolution: {integrity: sha512-XhwvLRVmiVon9pVC1fT15Gia1B6CeJYALcikVAuBve2BsHaaaQEVZAsQXMZpjeFrZ6aPYnFOTIyMdv3LJIqytw==}
-    peerDependencies:
-      react: '>=16'
-    dependencies:
-      '@instantdb/core': 0.17.33
-      react: 19.0.0-rc-69d4b800-20241021
-    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -4936,11 +4917,6 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /mutative@1.2.0:
-    resolution: {integrity: sha512-1muFw45Lwjso6TSBGiXfbjKS01fVSD/qaqBfTo/gXgp79e8KM4Sa1XP/S4iN2/DvSdIZgjFJI+JIhC7eKf3GTg==}
-    engines: {node: '>=14.0'}
-    dev: false
-
   /mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
     dev: true
@@ -6680,11 +6656,6 @@ packages:
     resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
     dependencies:
       base64-arraybuffer: 1.0.2
-    dev: false
-
-  /uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
     dev: false
 
   /v8-compile-cache-lib@3.0.1:

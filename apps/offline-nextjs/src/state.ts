@@ -3,6 +3,7 @@ import { normalizeDate } from "@/lib/day";
 import { generateId } from "@/lib/utils";
 import { type HabitData, Status } from "@/types";
 import { arrayMove } from "@dnd-kit/sortable";
+import posthog from "posthog-js";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -75,6 +76,7 @@ export const useHabitsStore = create<State & Actions>()(
 					});
 				},
 				deleteHabit: (id) => {
+					posthog.capture("delete_habit");
 					return set((state) => {
 						delete state.data[id];
 						state.orderedData = state.orderedData.filter(

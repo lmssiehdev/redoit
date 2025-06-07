@@ -81,7 +81,7 @@ export function HabitForm({
 			frequency: frequencyStringToBoolean(frequency),
 		});
 
-		posthog.capture(isEditing ? "habit_update" : "habit_create");
+		posthog.capture(isEditing ? "update_habit" : "create_habit");
 		// form.setValue("name", "");
 	}
 

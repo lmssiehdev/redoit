@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { DAYS, DEFAULT_HABIT_COLOR } from "@/constants";
 import type { HabitData } from "@/types";
+import { usePostHog } from "posthog-js/react";
 import { useMemo } from "react";
 
 const HABIT_NAME_MAX_LENGTH = 30;
@@ -58,6 +59,7 @@ export function HabitForm({
 		payload: Pick<HabitData, "name" | "color" | "isArchived" | "frequency">,
 	) => void;
 }) {
+	const posthog = usePostHog();
 	const isEditing = useMemo(() => habitData?.name !== undefined, [habitData]);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -78,7 +80,8 @@ export function HabitForm({
 			isArchived: archived,
 			frequency: frequencyStringToBoolean(frequency),
 		});
-		// posthog.capture(isEditing ? "habit_update" : "habit_create");
+
+		posthog.capture(isEditing ? "habit_update" : "habit_create");
 		// form.setValue("name", "");
 	}
 
